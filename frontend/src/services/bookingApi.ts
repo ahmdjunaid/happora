@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { api } from './api'
 import type { Booking, BookingsResponse } from '../types/booking'
+import { apiClient } from '../shared/lib/api'
 
 export interface CreateBookingPayload {
   serviceId: string
@@ -15,7 +15,7 @@ export interface BookingResponse {
 
 export const getMyBookings = async (): Promise<BookingsResponse> => {
   try {
-    const response = await api.get<BookingsResponse>('/bookings/my-bookings')
+    const response = await apiClient.get<BookingsResponse>('/bookings/my-bookings')
     return response.data
   } catch (error) {
     if (axios.isAxiosError<{ message?: string }>(error)) {
@@ -30,7 +30,7 @@ export const createBooking = async (
   payload: CreateBookingPayload,
 ): Promise<BookingResponse> => {
   try {
-    const response = await api.post<BookingResponse>('/bookings', payload)
+    const response = await apiClient.post<BookingResponse>('/bookings', payload)
     return response.data
   } catch (error) {
     if (axios.isAxiosError<{ message?: string }>(error)) {

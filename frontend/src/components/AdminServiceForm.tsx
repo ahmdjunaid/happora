@@ -74,7 +74,7 @@ export const AdminServiceForm = ({
           <option value="">Select category</option>
           {categories.map((category) => (
             <option key={category} value={category}>
-              {category}
+              {category.toUpperCase()}
             </option>
           ))}
         </select>

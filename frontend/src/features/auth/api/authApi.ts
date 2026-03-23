@@ -1,39 +1,49 @@
 import axios from 'axios'
-import { API_BASE_URL } from '../../../shared/config/env'
 import type {
   AuthResponse,
   ForgotPasswordPayload,
   LoginPayload,
   RegisterPayload,
 } from '../types/auth.types'
+import { apiClient } from '../../../shared/lib/api'
 
-const authClient = axios.create({
-  baseURL: `${API_BASE_URL}/auth`,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
-
-const request = async <TResponse, TPayload>(
-  endpoint: string,
-  payload: TPayload,
-): Promise<TResponse> => {
-  try {
-    const response = await authClient.post<TResponse>(`/${endpoint}`, payload)
-    return response.data
-  } catch (error) {
-    if (axios.isAxiosError<AuthResponse>(error)) {
-      throw new Error(error.response?.data?.message || 'Request failed')
-    }
-
-    throw error
+// reusable error handler (same as bookings)
+const handleError = (error: unknown): never => {
+  if (axios.isAxiosError<{ message?: string }>(error)) {
+    throw new Error(error.response?.data?.message || 'Request failed')
   }
+
+  throw error
 }
 
 export const authApi = {
-  login: (payload: LoginPayload) => request<AuthResponse, LoginPayload>('login', payload),
-  register: (payload: RegisterPayload) =>
-    request<AuthResponse, RegisterPayload>('register', payload),
-  forgotPassword: (payload: ForgotPasswordPayload) =>
-    request<AuthResponse, ForgotPasswordPayload>('forgot-password', payload),
+  async login(payload: LoginPayload): Promise<AuthResponse> {
+    try {
+      const response = await apiClient.post<AuthResponse>('/auth/login', payload)
+      return response.data
+    } catch (error) {
+      return handleError(error)
+    }
+  },
+
+  async register(payload: RegisterPayload): Promise<AuthResponse> {
+    try {
+      const response = await apiClient.post<AuthResponse>('/auth/register', payload)
+      return response.data
+    } catch (error) {
+      return handleError(error)
+    }
+  },
+
+  async forgotPassword(payload: ForgotPasswordPayload): Promise<AuthResponse> {
+    try {
+      const response = await apiClient.post<AuthResponse>(
+        '/auth/forgot-password',
+        payload,
+      )
+      return response.data
+    } catch (error) {
+      return handleError(error)
+    }
+  },
 }

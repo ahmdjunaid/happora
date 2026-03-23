@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { setApiToken } from '../services/api'
+import { setAuthToken } from '../shared/lib/api'
 import type { AuthUser } from '../features/auth/types/auth.types'
 import { authStorage } from '../utils/authStorage'
 
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<AuthUser | null>(() => authStorage.getUser())
 
   useEffect(() => {
-    setApiToken(token)
+    setAuthToken(token)
   }, [token])
 
   const value = useMemo<AuthContextValue>(
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         setUser(null)
         authStorage.clearToken()
         authStorage.clearUser()
-        setApiToken('')
+        setAuthToken('')
       },
     }),
     [token, user],

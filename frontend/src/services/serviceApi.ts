@@ -1,17 +1,17 @@
 import axios from 'axios'
-import { api } from './api'
 import type {
   Service,
   ServiceFilters,
   ServiceResponse,
   ServicesResponse,
 } from '../types/service'
+import { apiClient } from '../shared/lib/api'
 
 export const getAllServices = async (
   filters: Partial<ServiceFilters>,
 ): Promise<ServicesResponse> => {
   try {
-    const response = await api.get<ServicesResponse>('/services', {
+    const response = await apiClient.get<ServicesResponse>('/services', {
       params: filters,
     })
 
@@ -27,7 +27,7 @@ export const getAllServices = async (
 
 export const getServiceById = async (id: string): Promise<ServiceResponse> => {
   try {
-    const response = await api.get<ServiceResponse>(`/services/${id}`)
+    const response = await apiClient.get<ServiceResponse>(`/services/${id}`)
 
     return response.data
   } catch (error) {
@@ -43,7 +43,7 @@ export const createService = async (
   payload: Omit<Service, 'id'>,
 ): Promise<ServiceResponse> => {
   try {
-    const response = await api.post<ServiceResponse>('/services', payload)
+    const response = await apiClient.post<ServiceResponse>('/services', payload)
     return response.data
   } catch (error) {
     if (axios.isAxiosError<{ message?: string }>(error)) {
@@ -59,7 +59,7 @@ export const updateService = async (
   payload: Omit<Service, 'id'>,
 ): Promise<ServiceResponse> => {
   try {
-    const response = await api.put<ServiceResponse>(`/services/${id}`, payload)
+    const response = await apiClient.put<ServiceResponse>(`/services/${id}`, payload)
     return response.data
   } catch (error) {
     if (axios.isAxiosError<{ message?: string }>(error)) {
@@ -72,7 +72,7 @@ export const updateService = async (
 
 export const deleteService = async (id: string): Promise<{ message: string }> => {
   try {
-    const response = await api.delete<{ message: string }>(`/services/${id}`)
+    const response = await apiClient.delete<{ message: string }>(`/services/${id}`)
     return response.data
   } catch (error) {
     if (axios.isAxiosError<{ message?: string }>(error)) {
