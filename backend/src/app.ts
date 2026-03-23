@@ -7,7 +7,7 @@ import rateLimit from 'express-rate-limit';
 import { errorHandler, notFound } from './middlewares/error.middleware';
 
 import authRoutes from './routes/auth.routes';
-// import serviceRoutes from './routes/service.routes';
+import serviceRoutes from './routes/service.routes';
 // import bookingRoutes from './routes/booking.routes';
 // import categoryRoutes from './routes/category.routes';
 
@@ -40,7 +40,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Routes
 app.use('/api/auth', authLimiter, authRoutes);
-// app.use('/api/services', serviceRoutes);
+app.use('/api/services', serviceRoutes);
 // app.use('/api/bookings', bookingRoutes);
 // app.use('/api/categories', categoryRoutes);
 

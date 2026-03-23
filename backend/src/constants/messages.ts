@@ -20,6 +20,24 @@ export const MESSAGES = {
         INVALID_RESET_TOKEN: "Invalid or expired reset token.",
     },
 
+    SERVICE: {
+        CREATED_SUCCESS: "Service created successfully.",
+        FETCHED_SUCCESS: "Services fetched successfully.",
+        DETAILS_FETCHED_SUCCESS: "Service details fetched successfully.",
+        UPDATED_SUCCESS: "Service updated successfully.",
+        DELETED_SUCCESS: "Service deleted successfully.",
+        TITLE_REQUIRED: "Service title is required.",
+        DESCRIPTION_REQUIRED: "Service description is required.",
+        CATEGORY_REQUIRED: "Service category is required.",
+        LOCATION_REQUIRED: "Service location is required.",
+        PRICE_REQUIRED: "Price per day is required.",
+        INVALID_PRICE: "Price per day must be a valid positive number.",
+        INVALID_PRICE_RANGE: "Minimum price cannot be greater than maximum price.",
+        PROVIDER_ONLY: "Only providers can manage services.",
+        SERVICE_NOT_FOUND: "Service not found.",
+        UNAUTHORIZED_ACCESS: "You are not allowed to modify this service.",
+    },
+
     COMMON: {
         ALL_FIELDS_REQUIRES: "All fields are required."
     }
