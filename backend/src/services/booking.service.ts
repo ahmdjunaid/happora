@@ -11,10 +11,10 @@ import {
   IBookingResponse,
   ICreateBookingPayload,
 } from "../types/booking.types";
-import { AuthenticatedUser } from "../types/express.types";
 import { AppError } from "../middlewares/error.middleware";
 import HttpStatus from "../constants/http.statuscodes";
 import { MESSAGES } from "../constants/messages";
+import { DecodedUser } from "../types/user.types";
 
 @injectable()
 export class BookingService implements IBookingService {
@@ -49,8 +49,8 @@ export class BookingService implements IBookingService {
     };
   }
 
-  private ensureAuthenticatedUser(user?: AuthenticatedUser): AuthenticatedUser {
-    if (!user?.id) {
+  private ensureAuthenticatedUser(user?: DecodedUser): DecodedUser {
+    if (!user?.sub) {
       throw new AppError(HttpStatus.UNAUTHORIZED, MESSAGES.AUTH.INVALID_CREDENTIALS);
     }
 
@@ -58,7 +58,7 @@ export class BookingService implements IBookingService {
   }
 
   async bookService(
-    user: AuthenticatedUser,
+    user: DecodedUser,
     payload: ICreateBookingPayload,
   ): Promise<IBookingResponse> {
     const currentUser = this.ensureAuthenticatedUser(user);
@@ -66,6 +66,10 @@ export class BookingService implements IBookingService {
 
     if (!service) {
       throw new AppError(HttpStatus.NOT_FOUND, MESSAGES.SERVICE.SERVICE_NOT_FOUND);
+    }
+
+    if (service.bookedSlots >= service.totalSlots) {
+      throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.SERVICE.NO_SLOTS_AVAILABLE);
     }
 
     const startDate = new Date(payload.startDate);
@@ -81,7 +85,7 @@ export class BookingService implements IBookingService {
     );
 
     const booking = await this._bookingRepository.createBooking({
-      userId: new Types.ObjectId(currentUser.id),
+      userId: new Types.ObjectId(currentUser.sub),
       serviceId: new Types.ObjectId(payload.serviceId),
       providerId: service.providerId,
       startDate,
@@ -91,15 +95,19 @@ export class BookingService implements IBookingService {
       status: BookingStatus.CONFIRMED,
     });
 
+    await this._serviceRepository.updateService(payload.serviceId, {
+      bookedSlots: service.bookedSlots + 1,
+    });
+
     return {
       message: MESSAGES.BOOKING.CREATED_SUCCESS,
       booking: this.sanitizeBooking(booking),
     };
   }
 
-  async getMyBookings(user: AuthenticatedUser): Promise<IBookingListResponse> {
+  async getMyBookings(user: DecodedUser): Promise<IBookingListResponse> {
     const currentUser = this.ensureAuthenticatedUser(user);
-    const bookings = await this._bookingRepository.findBookingsByUser(currentUser.id);
+    const bookings = await this._bookingRepository.findBookingsByUser(currentUser.sub);
 
     return {
       message: MESSAGES.BOOKING.FETCHED_SUCCESS,

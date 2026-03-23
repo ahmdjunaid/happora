@@ -10,11 +10,11 @@ import {
   IServicePayload,
   IServiceResponse,
 } from "../types/service.types";
-import { AuthenticatedUser } from "../types/express.types";
 import { AppError } from "../middlewares/error.middleware";
 import HttpStatus from "../constants/http.statuscodes";
 import { MESSAGES } from "../constants/messages";
 import { UserRole } from "../types/user.types";
+import { DecodedUser } from "../types/user.types";
 
 @injectable()
 export class ServiceService implements IServiceService {
@@ -30,6 +30,8 @@ export class ServiceService implements IServiceService {
     category: string;
     location: string;
     pricePerDay: number;
+    totalSlots: number;
+    bookedSlots: number;
     providerId: Types.ObjectId;
   }): IServiceDto {
     return {
@@ -39,12 +41,15 @@ export class ServiceService implements IServiceService {
       category: service.category,
       location: service.location,
       pricePerDay: service.pricePerDay,
+      totalSlots: service.totalSlots,
+      bookedSlots: service.bookedSlots,
+      availableSlots: Math.max(service.totalSlots - service.bookedSlots, 0),
       providerId: service.providerId.toString(),
     };
   }
 
-  private ensureAdminAccess(provider?: AuthenticatedUser): AuthenticatedUser {
-    if (!provider?.id) {
+  private ensureAdminAccess(provider?: DecodedUser): DecodedUser {
+    if (!provider?.sub) {
       throw new AppError(HttpStatus.UNAUTHORIZED, MESSAGES.AUTH.INVALID_CREDENTIALS);
     }
 
@@ -58,14 +63,14 @@ export class ServiceService implements IServiceService {
   }
 
   async createService(
-    provider: AuthenticatedUser,
+    provider: DecodedUser,
     payload: IServicePayload,
   ): Promise<IServiceResponse> {
     const currentProvider = this.ensureAdminAccess(provider);
 
     const service = await this._serviceRepository.createService({
       ...payload,
-      providerId: new Types.ObjectId(currentProvider.id),
+      providerId: new Types.ObjectId(currentProvider.sub),
     });
 
     return {
@@ -98,7 +103,7 @@ export class ServiceService implements IServiceService {
 
   async updateService(
     serviceId: string,
-    provider: AuthenticatedUser,
+    provider: DecodedUser,
     payload: IServicePayload,
   ): Promise<IServiceResponse> {
     this.ensureAdminAccess(provider);
@@ -122,7 +127,7 @@ export class ServiceService implements IServiceService {
 
   async deleteService(
     serviceId: string,
-    provider: AuthenticatedUser,
+    provider: DecodedUser,
   ): Promise<{ message: string }> {
     this.ensureAdminAccess(provider);
     const existingService = await this._serviceRepository.findServiceById(serviceId);

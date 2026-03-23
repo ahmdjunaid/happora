@@ -42,7 +42,6 @@ if (process.env.NODE_ENV !== 'production') {
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/bookings', bookingRoutes);
-// app.use('/api/categories', categoryRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {

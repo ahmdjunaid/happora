@@ -1,4 +1,4 @@
-export type AuthView = 'login' | 'register' | 'forgot-password'
+export type AuthView = 'login' | 'register'
 
 export interface LoginPayload {
   email: string
@@ -7,10 +7,6 @@ export interface LoginPayload {
 
 export interface RegisterPayload extends LoginPayload {
   name: string
-}
-
-export interface ForgotPasswordPayload {
-  email: string
 }
 
 export interface AuthUser {
@@ -25,6 +21,4 @@ export interface AuthResponse {
   message: string
   user?: AuthUser
   token?: string
-  resetToken?: string
-  expiresAt?: string
 }

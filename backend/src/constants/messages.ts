@@ -31,12 +31,15 @@ export const MESSAGES = {
         CATEGORY_REQUIRED: "Service category is required.",
         LOCATION_REQUIRED: "Service location is required.",
         PRICE_REQUIRED: "Price per day is required.",
+        TOTAL_SLOTS_REQUIRED: "Total slots is required.",
         INVALID_PRICE: "Price per day must be a valid positive number.",
+        INVALID_TOTAL_SLOTS: "Total slots must be a valid number greater than 0.",
         INVALID_PRICE_RANGE: "Minimum price cannot be greater than maximum price.",
         PROVIDER_ONLY: "Only providers can manage services.",
         ADMIN_ONLY: "Only admin can manage services.",
         SERVICE_NOT_FOUND: "Service not found.",
         UNAUTHORIZED_ACCESS: "You are not allowed to modify this service.",
+        NO_SLOTS_AVAILABLE: "No slots available",
     },
 
     BOOKING: {

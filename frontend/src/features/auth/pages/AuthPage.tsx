@@ -2,7 +2,6 @@ import type { ReactElement } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useState } from 'react'
 import { AuthShell } from '../components/AuthShell'
-import { ForgotPasswordForm } from '../components/ForgotPasswordForm'
 import { LoginForm } from '../components/LoginForm'
 import { RegisterForm } from '../components/RegisterForm'
 import type { AuthView } from '../types/auth.types'
@@ -17,9 +16,8 @@ export const AuthPage = () => {
   }
 
   const formMap: Record<AuthView, ReactElement> = {
-    login: <LoginForm onForgotPassword={() => setActiveView('forgot-password')} />,
+    login: <LoginForm />,
     register: <RegisterForm />,
-    'forgot-password': <ForgotPasswordForm />,
   }
 
   return (

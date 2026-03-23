@@ -16,6 +16,7 @@ const initialValues: AdminServiceFormValues = {
   title: '',
   category: '',
   pricePerDay: '',
+  totalSlots: '',
   location: '',
   description: '',
 }
@@ -40,6 +41,7 @@ export const AdminServiceFormPage = () => {
           title: response.service.title,
           category: response.service.category,
           pricePerDay: String(response.service.pricePerDay),
+          totalSlots: String(response.service.totalSlots),
           location: response.service.location,
           description: response.service.description || '',
         })

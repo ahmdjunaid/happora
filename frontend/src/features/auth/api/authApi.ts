@@ -1,7 +1,6 @@
 import axios from 'axios'
 import type {
   AuthResponse,
-  ForgotPasswordPayload,
   LoginPayload,
   RegisterPayload,
 } from '../types/auth.types'
@@ -29,18 +28,6 @@ export const authApi = {
   async register(payload: RegisterPayload): Promise<AuthResponse> {
     try {
       const response = await apiClient.post<AuthResponse>('/auth/register', payload)
-      return response.data
-    } catch (error) {
-      return handleError(error)
-    }
-  },
-
-  async forgotPassword(payload: ForgotPasswordPayload): Promise<AuthResponse> {
-    try {
-      const response = await apiClient.post<AuthResponse>(
-        '/auth/forgot-password',
-        payload,
-      )
       return response.data
     } catch (error) {
       return handleError(error)

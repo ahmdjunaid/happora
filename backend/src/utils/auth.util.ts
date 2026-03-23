@@ -1,4 +1,4 @@
-import { randomBytes, randomUUID, scrypt as scryptCallback, timingSafeEqual, createHash } from "crypto";
+import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 
 const scrypt = promisify(scryptCallback);
@@ -35,13 +35,3 @@ export const comparePassword = async (
 
   return timingSafeEqual(storedBuffer, derivedKey);
 };
-
-export const generateResetToken = (): { plainToken: string; hashedToken: string } => {
-  const plainToken = `${randomUUID()}${randomBytes(24).toString("hex")}`;
-  const hashedToken = createHash("sha256").update(plainToken).digest("hex");
-
-  return { plainToken, hashedToken };
-};
-
-export const hashResetToken = (token: string): string =>
-  createHash("sha256").update(token).digest("hex");

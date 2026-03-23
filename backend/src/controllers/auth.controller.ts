@@ -9,7 +9,6 @@ import {
   validateEmail,
   validateName,
   validatePassword,
-  validateResetToken,
   validateRole,
 } from "../utils/auth.validation";
 
@@ -43,29 +42,6 @@ export class AuthController implements IAuthController {
       const password = validatePassword(req.body.password);
 
       const response = await this._userService.login({ email, password });
-      res.status(HttpStatus.OK).json(response);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const email = validateEmail(req.body.email);
-
-      const response = await this._userService.forgotPassword(email);
-      res.status(HttpStatus.OK).json(response);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  resetPassword = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const token = validateResetToken(req.body.token);
-      const password = validatePassword(req.body.password);
-
-      const response = await this._userService.resetPassword({ token, password });
       res.status(HttpStatus.OK).json(response);
     } catch (error) {
       next(error);

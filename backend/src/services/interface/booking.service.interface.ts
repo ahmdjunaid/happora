@@ -3,12 +3,12 @@ import {
   IBookingResponse,
   ICreateBookingPayload,
 } from "../../types/booking.types";
-import { AuthenticatedUser } from "../../types/express.types";
+import { DecodedUser } from "../../types/user.types";
 
 export interface IBookingService {
   bookService(
-    user: AuthenticatedUser,
+    user: DecodedUser,
     payload: ICreateBookingPayload,
   ): Promise<IBookingResponse>;
-  getMyBookings(user: AuthenticatedUser): Promise<IBookingListResponse>;
+  getMyBookings(user: DecodedUser): Promise<IBookingListResponse>;
 }

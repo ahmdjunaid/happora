@@ -6,6 +6,9 @@ export interface Service {
   location: string
   category: string
   providerId?: string
+  totalSlots: number
+  bookedSlots: number
+  availableSlots: number
 }
 
 export interface ServiceFilters {

@@ -7,11 +7,7 @@ import { AuthField } from './AuthField'
 import { AuthStatus } from './AuthStatus'
 import { useAuth } from '../../../routes/AuthProvider'
 
-interface LoginFormProps {
-  onForgotPassword: () => void
-}
-
-export const LoginForm = ({ onForgotPassword }: LoginFormProps) => {
+export const LoginForm = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { login } = useAuth()
@@ -102,14 +98,6 @@ export const LoginForm = ({ onForgotPassword }: LoginFormProps) => {
           disabled={isSubmitting}
         >
           {isSubmitting ? 'Signing in...' : 'Login'}
-        </button>
-        <button
-          className="text-sm font-medium text-brand underline-offset-4 hover:underline"
-          type="button"
-          onClick={onForgotPassword}
-          disabled={isSubmitting}
-        >
-          Forgot password?
         </button>
       </div>
     </form>

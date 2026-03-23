@@ -1,7 +1,6 @@
 import { injectable } from "inversify";
 import {
   IAuthResponse,
-  IForgotPasswordResponse,
   IUser,
   IUserProfile,
 } from "../types/user.types";
@@ -14,9 +13,7 @@ import HttpStatus from "../constants/http.statuscodes";
 import { MESSAGES } from "../constants/messages";
 import {
   comparePassword,
-  generateResetToken,
   hashPassword,
-  hashResetToken,
   normalizeEmail,
 } from "../utils/auth.util";
 import { generateAuthToken } from "../utils/jwt.util";
@@ -84,60 +81,6 @@ export class UserService implements IUserService {
             message: MESSAGES.AUTH.LOGIN_SUCCESS,
             user: sanitizedUser,
             token: generateAuthToken(sanitizedUser),
-        };
-    }
-
-    async forgotPassword(email: string): Promise<IForgotPasswordResponse> {
-        const normalizedEmail = normalizeEmail(email);
-        const user = await this._userRepo.findOne({ email: normalizedEmail, isDeleted: false });
-
-        if (!user) {
-            throw new AppError(HttpStatus.NOT_FOUND, MESSAGES.AUTH.USER_NOT_FOUND);
-        }
-
-        const { plainToken, hashedToken } = generateResetToken();
-        const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
-
-        await this._userRepo.updateOne(
-            { _id: user._id },
-            {
-                resetPasswordToken: hashedToken,
-                resetPasswordExpiresAt: expiresAt,
-            },
-        );
-
-        return {
-            message: MESSAGES.AUTH.FORGOT_PASSWORD_SUCCESS,
-            resetToken: plainToken,
-            expiresAt,
-        };
-    }
-
-    async resetPassword(data: { token: string; password: string }): Promise<{ message: string }> {
-        const hashedToken = hashResetToken(data.token);
-
-        const user = await this._userRepo.findOne({
-            resetPasswordToken: hashedToken,
-            resetPasswordExpiresAt: { $gt: new Date() },
-            isDeleted: false,
-        });
-
-        if (!user) {
-            throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.AUTH.INVALID_RESET_TOKEN);
-        }
-
-        const hashedPassword = await hashPassword(data.password);
-        await this._userRepo.updateOne(
-            { _id: user._id },
-            {
-                password: hashedPassword,
-                resetPasswordToken: null,
-                resetPasswordExpiresAt: null,
-            },
-        );
-
-        return {
-            message: MESSAGES.AUTH.RESET_PASSWORD_SUCCESS,
         };
     }
 }

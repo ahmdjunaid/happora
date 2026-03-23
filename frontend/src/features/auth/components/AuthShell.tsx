@@ -9,7 +9,6 @@ interface AuthShellProps extends PropsWithChildren {
 const viewLabels: Array<{ id: AuthView; label: string }> = [
   { id: 'login', label: 'Login' },
   { id: 'register', label: 'Register' },
-  { id: 'forgot-password', label: 'Forgot password' },
 ]
 
 export const AuthShell = ({ activeView, onChangeView, children }: AuthShellProps) => {

@@ -57,12 +57,3 @@ export const validateRole = (value: unknown): UserRole => {
 
   return role;
 };
-
-export const validateResetToken = (value: unknown): string => {
-  const token = assertString(value);
-  if (!token) {
-    throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.AUTH.RESET_TOKEN_REQUIRED);
-  }
-
-  return token;
-};

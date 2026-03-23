@@ -6,6 +6,7 @@ export interface AdminServiceFormValues {
   title: string
   category: string
   pricePerDay: string
+  totalSlots: string
   location: string
   description: string
 }
@@ -27,6 +28,9 @@ export const getServicePayloadFromForm = (
   title: values.title.trim(),
   category: values.category,
   pricePerDay: Number(values.pricePerDay),
+  totalSlots: Number(values.totalSlots),
+  bookedSlots: 0,
+  availableSlots: Number(values.totalSlots),
   location: values.location.trim(),
   description: values.description.trim(),
 })
@@ -91,6 +95,18 @@ export const AdminServiceForm = ({
           />
         </label>
 
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-slate-700">Total Slots</span>
+          <input
+            value={values.totalSlots}
+            onChange={(event) => onChange('totalSlots', event.target.value)}
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 focus:border-brand focus:outline-none"
+            placeholder="25"
+          />
+        </label>
+      </div>
+
+      <div className="grid gap-4">
         <label className="block">
           <span className="mb-2 block text-sm font-medium text-slate-700">Location</span>
           <input

@@ -4,22 +4,22 @@ import {
   IServicePayload,
   IServiceResponse,
 } from "../../types/service.types";
-import { AuthenticatedUser } from "../../types/express.types";
+import { DecodedUser } from "../../types/user.types";
 
 export interface IServiceService {
   createService(
-    provider: AuthenticatedUser,
+    provider: DecodedUser,
     payload: IServicePayload,
   ): Promise<IServiceResponse>;
   getAllServices(filters: IServiceFilters): Promise<IServiceListResponse>;
   getServiceById(id: string): Promise<IServiceResponse>;
   updateService(
     serviceId: string,
-    provider: AuthenticatedUser,
+    provider: DecodedUser,
     payload: IServicePayload,
   ): Promise<IServiceResponse>;
   deleteService(
     serviceId: string,
-    provider: AuthenticatedUser,
+    provider: DecodedUser,
   ): Promise<{ message: string }>;
 }

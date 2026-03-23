@@ -6,6 +6,9 @@ interface ServiceCardProps {
 }
 
 export const ServiceCard = ({ service }: ServiceCardProps) => {
+  const isFullyBooked = service.availableSlots === 0
+  const isLowAvailability = service.availableSlots > 0 && service.availableSlots <= 3
+
   return (
     <article className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
       <div className="mb-4 flex items-start justify-between gap-4">
@@ -24,6 +27,9 @@ export const ServiceCard = ({ service }: ServiceCardProps) => {
       <div className="space-y-2 text-sm text-slate-500">
         <p className="line-clamp-2 min-h-10">{service.description || 'Event service available for booking.'}</p>
         <p className="font-medium text-slate-600">{service.location}</p>
+        <p className="font-medium text-slate-700">Available Slots: {service.availableSlots}</p>
+        {isFullyBooked && <p className="font-medium text-rose-600">Fully Booked</p>}
+        {isLowAvailability && <p className="font-medium text-amber-600">Hurry! Only few slots left</p>}
       </div>
 
       <Link

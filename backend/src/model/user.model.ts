@@ -9,13 +9,9 @@ const userSchema = new Schema<IUser>(
     role: { type: String, enum: Object.values(UserRole), default: UserRole.CUSTOMER },
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
-    resetPasswordToken: { type: String, default: null },
-    resetPasswordExpiresAt: { type: Date, default: null },
   },
   { timestamps: true }
 );
-
-userSchema.index({ email: 1 });
 
 export const UserModel = mongoose.model<IUser>('User', userSchema);
 export type UserDocument = HydratedDocument<IUser>;

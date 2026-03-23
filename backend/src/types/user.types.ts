@@ -1,9 +1,15 @@
 
 export enum UserRole {
   CUSTOMER = 'USER',
-  PROVIDER = 'PROVIDER',
   ADMIN = 'ADMIN',
 }
+
+export interface DecodedUser {
+  sub: string;
+  email: string;
+  role: string;
+}
+
 
 export interface IUser {
   name: string;
@@ -12,8 +18,6 @@ export interface IUser {
   role: UserRole;
   isDeleted: boolean;
   isBlocked: boolean;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiresAt?: Date | null;
 }
 
 export interface IUserProfile {
@@ -28,10 +32,4 @@ export interface IAuthResponse {
   message: string;
   user: IUserProfile;
   token: string;
-}
-
-export interface IForgotPasswordResponse {
-  message: string;
-  resetToken: string;
-  expiresAt: Date;
 }

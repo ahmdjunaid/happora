@@ -16,6 +16,16 @@ const parsePriceValue = (value: unknown): number => {
   return parsedValue;
 };
 
+const parseSlotsValue = (value: unknown): number => {
+  const parsedValue = Number(value);
+
+  if (!Number.isInteger(parsedValue) || parsedValue < 1) {
+    throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.SERVICE.INVALID_TOTAL_SLOTS);
+  }
+
+  return parsedValue;
+};
+
 export const validateServicePayload = (
   payload: Record<string, unknown>,
 ): IServicePayload => {
@@ -44,12 +54,17 @@ export const validateServicePayload = (
     throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.SERVICE.PRICE_REQUIRED);
   }
 
+  if (payload.totalSlots === undefined || payload.totalSlots === null || payload.totalSlots === "") {
+    throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.SERVICE.TOTAL_SLOTS_REQUIRED);
+  }
+
   return {
     title,
     description,
     category,
     location,
     pricePerDay: parsePriceValue(payload.pricePerDay),
+    totalSlots: parseSlotsValue(payload.totalSlots),
   };
 };
 

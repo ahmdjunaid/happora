@@ -2,11 +2,11 @@ import type { FormEvent } from 'react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
+import { useAuth } from '../routes/AuthProvider'
 import { createBooking } from '../services/bookingApi'
 import { getServiceById } from '../services/serviceApi'
 import type { Service } from '../types/service'
 import { calculateBookingDays } from '../utils/calculateBooking'
-import { useAuth } from '../routes/AuthProvider'
 
 export const BookingPage = () => {
   const { id = '' } = useParams()
@@ -35,9 +35,16 @@ export const BookingPage = () => {
 
   const totalDays = calculateBookingDays(startDate, endDate)
   const totalPrice = service ? totalDays * service.pricePerDay : 0
+  const availableSlots = service?.availableSlots ?? 0
+  const isFullyBooked = availableSlots === 0
+  const isLowAvailability = availableSlots > 0 && availableSlots <= 3
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    if (!service || isFullyBooked) {
+      return
+    }
 
     try {
       setIsSubmitting(true)
@@ -66,12 +73,27 @@ export const BookingPage = () => {
             {service?.title || 'Confirm your booking'}
           </h1>
           <p className="mt-4 text-base leading-7 text-slate-500">
-            Select your dates and we will calculate the total based on the service’s
+            Select your dates and we will calculate the total based on the service's
             daily rate.
           </p>
+          <div className="mt-6 rounded-2xl bg-slate-50 p-5">
+            <p className="text-sm text-slate-500">Available Slots</p>
+            <p className="mt-1 text-3xl font-semibold text-slate-900">{availableSlots}</p>
+            {isFullyBooked && (
+              <p className="mt-2 text-sm font-medium text-rose-600">Fully Booked</p>
+            )}
+            {isLowAvailability && (
+              <p className="mt-2 text-sm font-medium text-amber-600">
+                Hurry! Only few slots left
+              </p>
+            )}
+          </div>
         </section>
 
-        <form onSubmit={handleSubmit} className="space-y-4 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm"
+        >
           {error && (
             <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
               {error}
@@ -107,10 +129,10 @@ export const BookingPage = () => {
 
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="rounded-xl bg-brand px-5 py-3 text-sm font-medium text-white"
+            disabled={isSubmitting || isFullyBooked}
+            className="rounded-xl bg-brand px-5 py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:bg-slate-300"
           >
-            {isSubmitting ? 'Confirming...' : 'Confirm Booking'}
+            {isSubmitting ? 'Confirming...' : isFullyBooked ? 'Fully Booked' : 'Confirm Booking'}
           </button>
         </form>
       </div>

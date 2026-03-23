@@ -8,6 +8,8 @@ const serviceSchema = new Schema<IService>(
     category: { type: String, required: true, trim: true },
     location: { type: String, required: true, trim: true },
     pricePerDay: { type: Number, required: true, min: 0 },
+    totalSlots: { type: Number, required: true, min: 1 },
+    bookedSlots: { type: Number, default: 0, min: 0 },
     providerId: {
       type: Schema.Types.ObjectId,
       ref: "User",
