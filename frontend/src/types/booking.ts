@@ -14,3 +14,9 @@ export interface BookingsResponse {
   message: string
   bookings: Booking[]
 }
+
+export interface BookingAvailabilityResponse {
+  message: string
+  available: boolean
+  availableSlots: number
+}

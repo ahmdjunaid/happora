@@ -7,7 +7,6 @@ export interface IService {
   location: string;
   pricePerDay: number;
   totalSlots: number;
-  bookedSlots: number;
   providerId: Types.ObjectId;
   isDeleted: boolean;
 }
@@ -47,7 +46,6 @@ export interface IServiceDto {
   location: string;
   pricePerDay: number;
   totalSlots: number;
-  bookedSlots: number;
   availableSlots: number;
   providerId: string;
 }

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import type {
-  Service,
   ServiceFilters,
+  ServicePayload,
   ServiceResponse,
   ServicesResponse,
 } from '../types/service'
@@ -40,7 +40,7 @@ export const getServiceById = async (id: string): Promise<ServiceResponse> => {
 }
 
 export const createService = async (
-  payload: Omit<Service, 'id'>,
+  payload: ServicePayload,
 ): Promise<ServiceResponse> => {
   try {
     const response = await apiClient.post<ServiceResponse>('/services', payload)
@@ -56,7 +56,7 @@ export const createService = async (
 
 export const updateService = async (
   id: string,
-  payload: Omit<Service, 'id'>,
+  payload: ServicePayload,
 ): Promise<ServiceResponse> => {
   try {
     const response = await apiClient.put<ServiceResponse>(`/services/${id}`, payload)

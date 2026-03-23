@@ -7,8 +7,16 @@ export interface Service {
   category: string
   providerId?: string
   totalSlots: number
-  bookedSlots: number
   availableSlots: number
+}
+
+export interface ServicePayload {
+  title: string
+  description: string
+  category: string
+  location: string
+  pricePerDay: number
+  totalSlots: number
 }
 
 export interface ServiceFilters {

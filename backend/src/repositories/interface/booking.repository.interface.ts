@@ -4,4 +4,9 @@ import { IBooking } from "../../types/booking.types";
 export interface IBookingRepository {
   createBooking(data: Partial<IBooking>): Promise<BookingDocument>;
   findBookingsByUser(userId: string): Promise<BookingDocument[]>;
+  findOverlappingBookings(
+    serviceId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<BookingDocument[]>;
 }

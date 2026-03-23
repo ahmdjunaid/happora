@@ -31,7 +31,6 @@ export class ServiceService implements IServiceService {
     location: string;
     pricePerDay: number;
     totalSlots: number;
-    bookedSlots: number;
     providerId: Types.ObjectId;
   }): IServiceDto {
     return {
@@ -42,8 +41,7 @@ export class ServiceService implements IServiceService {
       location: service.location,
       pricePerDay: service.pricePerDay,
       totalSlots: service.totalSlots,
-      bookedSlots: service.bookedSlots,
-      availableSlots: Math.max(service.totalSlots - service.bookedSlots, 0),
+      availableSlots: service.totalSlots,
       providerId: service.providerId.toString(),
     };
   }

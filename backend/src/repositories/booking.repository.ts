@@ -20,4 +20,17 @@ export class BookingRepository
   findBookingsByUser(userId: string): Promise<BookingDocument[]> {
     return BookingModel.find({ userId, isDeleted: false }).sort({ createdAt: -1 });
   }
+
+  findOverlappingBookings(
+    serviceId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<BookingDocument[]> {
+    return BookingModel.find({
+      serviceId,
+      isDeleted: false,
+      startDate: { $lt: endDate },
+      endDate: { $gt: startDate },
+    }).sort({ startDate: 1 });
+  }
 }

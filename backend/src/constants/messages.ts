@@ -45,11 +45,13 @@ export const MESSAGES = {
     BOOKING: {
         CREATED_SUCCESS: "Booking created successfully.",
         FETCHED_SUCCESS: "Bookings fetched successfully.",
+        AVAILABILITY_FETCHED_SUCCESS: "Availability fetched successfully.",
         SERVICE_REQUIRED: "Service is required.",
         START_DATE_REQUIRED: "Start date is required.",
         END_DATE_REQUIRED: "End date is required.",
         INVALID_DATE: "Please provide valid booking dates.",
         INVALID_DATE_RANGE: "Start date must be earlier than end date.",
+        NO_SLOTS_AVAILABLE_FOR_DATE: "No slots available for selected date",
     },
 
     COMMON: {

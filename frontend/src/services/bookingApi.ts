@@ -1,5 +1,9 @@
 import axios from 'axios'
-import type { Booking, BookingsResponse } from '../types/booking'
+import type {
+  Booking,
+  BookingAvailabilityResponse,
+  BookingsResponse,
+} from '../types/booking'
 import { apiClient } from '../shared/lib/api'
 
 export interface CreateBookingPayload {
@@ -35,6 +39,24 @@ export const createBooking = async (
   } catch (error) {
     if (axios.isAxiosError<{ message?: string }>(error)) {
       throw new Error(error.response?.data?.message || 'Failed to create booking.')
+    }
+
+    throw error
+  }
+}
+
+export const checkBookingAvailability = async (
+  payload: CreateBookingPayload,
+): Promise<BookingAvailabilityResponse> => {
+  try {
+    const response = await apiClient.get<BookingAvailabilityResponse>(
+      '/bookings/availability',
+      { params: payload },
+    )
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError<{ message?: string }>(error)) {
+      throw new Error(error.response?.data?.message || 'Failed to check availability.')
     }
 
     throw error

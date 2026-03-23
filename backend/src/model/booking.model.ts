@@ -36,6 +36,7 @@ const bookingSchema = new Schema<IBooking>(
 );
 
 bookingSchema.index({ userId: 1, createdAt: -1 });
+bookingSchema.index({ serviceId: 1, startDate: 1, endDate: 1 });
 
 export const BookingModel = mongoose.model<IBooking>("Booking", bookingSchema);
 export type BookingDocument = HydratedDocument<IBooking>;

@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react'
-import type { Service } from '../types/service'
+import type { ServicePayload } from '../types/service'
 import { categories } from '../utils/categories'
 
 export interface AdminServiceFormValues {
@@ -24,13 +24,11 @@ interface AdminServiceFormProps {
 
 export const getServicePayloadFromForm = (
   values: AdminServiceFormValues,
-): Omit<Service, 'id'> => ({
+): ServicePayload => ({
   title: values.title.trim(),
   category: values.category,
   pricePerDay: Number(values.pricePerDay),
   totalSlots: Number(values.totalSlots),
-  bookedSlots: 0,
-  availableSlots: Number(values.totalSlots),
   location: values.location.trim(),
   description: values.description.trim(),
 })

@@ -8,7 +8,7 @@ const getTrimmedValue = (value: unknown): string =>
 
 const isValidDate = (value: string): boolean => !Number.isNaN(new Date(value).getTime());
 
-export const validateCreateBookingPayload = (
+const validateBookingDatesPayload = (
   payload: Record<string, unknown>,
 ): ICreateBookingPayload => {
   const serviceId = getTrimmedValue(payload.serviceId);
@@ -37,3 +37,11 @@ export const validateCreateBookingPayload = (
     endDate,
   };
 };
+
+export const validateCreateBookingPayload = (
+  payload: Record<string, unknown>,
+): ICreateBookingPayload => validateBookingDatesPayload(payload);
+
+export const validateBookingAvailabilityPayload = (
+  payload: Record<string, unknown>,
+): ICreateBookingPayload => validateBookingDatesPayload(payload);

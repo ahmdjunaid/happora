@@ -7,6 +7,7 @@ import { verifyJWT } from "../utils/jwt.util";
 const router = Router();
 const bookingController = container.get<IBookingController>(TYPES.BookingController);
 
+router.get("/availability", verifyJWT, bookingController.checkAvailability);
 router.post("/", verifyJWT, bookingController.bookService);
 router.get("/my-bookings", verifyJWT, bookingController.getMyBookings);
 

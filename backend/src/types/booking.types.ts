@@ -22,6 +22,12 @@ export interface ICreateBookingPayload {
   endDate: string;
 }
 
+export interface IBookingAvailabilityResponse {
+  message: string;
+  available: boolean;
+  availableSlots: number;
+}
+
 export interface IBookingDto {
   id: string;
   serviceId: string;

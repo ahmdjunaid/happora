@@ -1,4 +1,5 @@
 import {
+  IBookingAvailabilityResponse,
   IBookingListResponse,
   IBookingResponse,
   ICreateBookingPayload,
@@ -10,5 +11,8 @@ export interface IBookingService {
     user: DecodedUser,
     payload: ICreateBookingPayload,
   ): Promise<IBookingResponse>;
+  checkAvailability(
+    payload: ICreateBookingPayload,
+  ): Promise<IBookingAvailabilityResponse>;
   getMyBookings(user: DecodedUser): Promise<IBookingListResponse>;
 }

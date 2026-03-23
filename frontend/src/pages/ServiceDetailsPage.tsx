@@ -64,6 +64,10 @@ export const ServiceDetailsPage = () => {
                 <p className="text-sm uppercase tracking-[0.16em] text-slate-400">Per Day</p>
                 <p className="mt-2 text-lg font-semibold text-slate-900">Rs. {service.pricePerDay}</p>
               </div>
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm uppercase tracking-[0.16em] text-slate-400">Daily Capacity</p>
+                <p className="mt-2 text-lg font-semibold text-slate-900">{service.totalSlots}</p>
+              </div>
             </div>
           </section>
 
@@ -71,7 +75,7 @@ export const ServiceDetailsPage = () => {
             <h2 className="text-2xl font-semibold text-slate-900">Ready to book?</h2>
             <p className="mt-3 text-sm leading-6 text-slate-500">
               Continue to the booking flow and confirm your preferred dates for this
-              service.
+              service. Availability is checked after you select a date range.
             </p>
 
             <div className="mt-6 rounded-2xl bg-brand-soft p-5">

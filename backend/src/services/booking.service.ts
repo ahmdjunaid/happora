@@ -6,6 +6,7 @@ import { IServiceRepository } from "../repositories/interface/service.repository
 import { IBookingService } from "./interface/booking.service.interface";
 import {
   BookingStatus,
+  IBookingAvailabilityResponse,
   IBookingDto,
   IBookingListResponse,
   IBookingResponse,
@@ -57,21 +58,11 @@ export class BookingService implements IBookingService {
     return user;
   }
 
-  async bookService(
-    user: DecodedUser,
-    payload: ICreateBookingPayload,
-  ): Promise<IBookingResponse> {
-    const currentUser = this.ensureAuthenticatedUser(user);
-    const service = await this._serviceRepository.findServiceById(payload.serviceId);
-
-    if (!service) {
-      throw new AppError(HttpStatus.NOT_FOUND, MESSAGES.SERVICE.SERVICE_NOT_FOUND);
-    }
-
-    if (service.bookedSlots >= service.totalSlots) {
-      throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.SERVICE.NO_SLOTS_AVAILABLE);
-    }
-
+  private parseBookingDates(payload: ICreateBookingPayload): {
+    startDate: Date;
+    endDate: Date;
+    numberOfDays: number;
+  } {
     const startDate = new Date(payload.startDate);
     const endDate = new Date(payload.endDate);
 
@@ -84,6 +75,103 @@ export class BookingService implements IBookingService {
       (endDate.getTime() - startDate.getTime()) / millisecondsPerDay,
     );
 
+    return { startDate, endDate, numberOfDays };
+  }
+
+  private getMinAvailableSlots(
+    totalSlots: number,
+    bookings: Array<{ startDate: Date; endDate: Date }>,
+    startDate: Date,
+    endDate: Date,
+  ): number {
+    let minimumAvailableSlots = totalSlots;
+    const currentDate = new Date(startDate);
+
+    while (currentDate < endDate) {
+      const overlappingCount = bookings.filter(
+        (booking) =>
+          booking.startDate.getTime() <= currentDate.getTime() &&
+          booking.endDate.getTime() > currentDate.getTime(),
+      ).length;
+      const availableSlots = totalSlots - overlappingCount;
+
+      minimumAvailableSlots = Math.min(minimumAvailableSlots, availableSlots);
+      currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+    }
+
+    return minimumAvailableSlots;
+  }
+
+  private async resolveAvailability(
+    serviceId: string,
+    totalSlots: number,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number> {
+    const overlappingBookings = await this._bookingRepository.findOverlappingBookings(
+      serviceId,
+      startDate,
+      endDate,
+    );
+
+    return this.getMinAvailableSlots(
+      totalSlots,
+      overlappingBookings,
+      startDate,
+      endDate,
+    );
+  }
+
+  async checkAvailability(
+    payload: ICreateBookingPayload,
+  ): Promise<IBookingAvailabilityResponse> {
+    const service = await this._serviceRepository.findServiceById(payload.serviceId);
+
+    if (!service) {
+      throw new AppError(HttpStatus.NOT_FOUND, MESSAGES.SERVICE.SERVICE_NOT_FOUND);
+    }
+
+    const { startDate, endDate } = this.parseBookingDates(payload);
+    const availableSlots = await this.resolveAvailability(
+      payload.serviceId,
+      service.totalSlots,
+      startDate,
+      endDate,
+    );
+
+    return {
+      message: MESSAGES.BOOKING.AVAILABILITY_FETCHED_SUCCESS,
+      available: availableSlots > 0,
+      availableSlots: Math.max(availableSlots, 0),
+    };
+  }
+
+  async bookService(
+    user: DecodedUser,
+    payload: ICreateBookingPayload,
+  ): Promise<IBookingResponse> {
+    const currentUser = this.ensureAuthenticatedUser(user);
+    const service = await this._serviceRepository.findServiceById(payload.serviceId);
+
+    if (!service) {
+      throw new AppError(HttpStatus.NOT_FOUND, MESSAGES.SERVICE.SERVICE_NOT_FOUND);
+    }
+
+    const { startDate, endDate, numberOfDays } = this.parseBookingDates(payload);
+    const availableSlots = await this.resolveAvailability(
+      payload.serviceId,
+      service.totalSlots,
+      startDate,
+      endDate,
+    );
+
+    if (availableSlots <= 0) {
+      throw new AppError(
+        HttpStatus.BAD_REQUEST,
+        MESSAGES.BOOKING.NO_SLOTS_AVAILABLE_FOR_DATE,
+      );
+    }
+
     const booking = await this._bookingRepository.createBooking({
       userId: new Types.ObjectId(currentUser.sub),
       serviceId: new Types.ObjectId(payload.serviceId),
@@ -93,10 +181,6 @@ export class BookingService implements IBookingService {
       numberOfDays,
       totalPrice: service.pricePerDay * numberOfDays,
       status: BookingStatus.CONFIRMED,
-    });
-
-    await this._serviceRepository.updateService(payload.serviceId, {
-      bookedSlots: service.bookedSlots + 1,
     });
 
     return {

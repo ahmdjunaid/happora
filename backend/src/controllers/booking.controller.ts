@@ -5,7 +5,10 @@ import { TYPES } from "../DI/types";
 import { IBookingController } from "./interface/booking.controller.interface";
 import { IBookingService } from "../services/interface/booking.service.interface";
 import { AuthenticatedRequest } from "../types/express.types";
-import { validateCreateBookingPayload } from "../utils/booking.validation";
+import {
+  validateBookingAvailabilityPayload,
+  validateCreateBookingPayload,
+} from "../utils/booking.validation";
 
 @injectable()
 export class BookingController implements IBookingController {
@@ -23,6 +26,23 @@ export class BookingController implements IBookingController {
       const response = await this._bookingService.bookService(req.user!, payload);
 
       res.status(HttpStatus.CREATED).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  checkAvailability = async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const payload = validateBookingAvailabilityPayload(
+        req.query as Record<string, unknown>,
+      );
+      const response = await this._bookingService.checkAvailability(payload);
+
+      res.status(HttpStatus.OK).json(response);
     } catch (error) {
       next(error);
     }
