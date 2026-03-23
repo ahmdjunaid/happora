@@ -1,7 +1,7 @@
-import { AuthPage } from '../features/auth/pages/AuthPage'
+import { EventPlatformPage } from '../features/platform/pages/EventPlatformPage'
 
 function App() {
-  return <AuthPage />
+  return <EventPlatformPage />
 }
 
 export default App

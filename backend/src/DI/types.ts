@@ -8,5 +8,10 @@ export const TYPES = {
     //Service
     ServiceRepository: Symbol.for("ServiceRepository"),
     ServiceService: Symbol.for("ServiceService"),
-    ServiceController: Symbol.for("ServiceController")
+    ServiceController: Symbol.for("ServiceController"),
+
+    //Booking
+    BookingRepository: Symbol.for("BookingRepository"),
+    BookingService: Symbol.for("BookingService"),
+    BookingController: Symbol.for("BookingController")
 }
