@@ -48,7 +48,7 @@ export const validatePassword = (value: unknown): string => {
 export const validateRole = (value: unknown): UserRole => {
   const role = assertString(value).toUpperCase() as UserRole;
   if (!role) {
-    throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.AUTH.ROLE_REQUIRED);
+    return UserRole.CUSTOMER;
   }
 
   if (!Object.values(UserRole).includes(role)) {
