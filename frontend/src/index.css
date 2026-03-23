@@ -1,18 +1,10 @@
-:root {
-  font-family:
-    Inter, 'Segoe UI', 'Helvetica Neue', sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #12201d;
-  background: #f8f5ef;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@import "tailwindcss";
 
-* {
-  box-sizing: border-box;
+@theme {
+  --color-brand: #5b5ce2;
+  --color-brand-soft: #eff0ff;
+  --color-surface: #fffdfb;
+  --color-muted: #6b7280;
 }
 
 html {
@@ -21,13 +13,12 @@ html {
 
 body {
   margin: 0;
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(91, 92, 226, 0.12), transparent 26%),
+    linear-gradient(180deg, #fffcf8 0%, #f8f8ff 100%);
+  font-family: Inter, "Segoe UI", sans-serif;
+  color: #1f2937;
 }
 
 #root {
