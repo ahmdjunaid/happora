@@ -4,9 +4,14 @@ import { injectable } from "inversify";
 import { inject } from "inversify";
 import { TYPES } from "../DI/types";
 import { IUserService } from "../services/interface/user.service.interface";
-import { AppError } from "../middlewares/error.middleware";
 import HttpStatus from "../constants/http.statuscodes";
-import { MESSAGES } from "../constants/messages";
+import {
+  validateEmail,
+  validateName,
+  validatePassword,
+  validateResetToken,
+  validateRole,
+} from "../utils/auth.validation";
 
 @injectable()
 export class AuthController implements IAuthController {
@@ -14,12 +19,10 @@ export class AuthController implements IAuthController {
 
   register = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { name, email, password, role } = req.body;
-      if (!name || !email || !password || !role)
-        throw new AppError(
-          HttpStatus.BAD_REQUEST,
-          MESSAGES.COMMON.ALL_FIELDS_REQUIRES,
-        );
+      const name = validateName(req.body.name);
+      const email = validateEmail(req.body.email);
+      const password = validatePassword(req.body.password);
+      const role = validateRole(req.body.role);
 
       const response = await this._userService.register({
         name,
@@ -34,5 +37,38 @@ export class AuthController implements IAuthController {
     }
   };
 
-  
+  login = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const email = validateEmail(req.body.email);
+      const password = validatePassword(req.body.password);
+
+      const response = await this._userService.login({ email, password });
+      res.status(HttpStatus.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const email = validateEmail(req.body.email);
+
+      const response = await this._userService.forgotPassword(email);
+      res.status(HttpStatus.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const token = validateResetToken(req.body.token);
+      const password = validatePassword(req.body.password);
+
+      const response = await this._userService.resetPassword({ token, password });
+      res.status(HttpStatus.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
