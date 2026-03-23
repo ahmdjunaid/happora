@@ -38,6 +38,16 @@ export const MESSAGES = {
         UNAUTHORIZED_ACCESS: "You are not allowed to modify this service.",
     },
 
+    BOOKING: {
+        CREATED_SUCCESS: "Booking created successfully.",
+        FETCHED_SUCCESS: "Bookings fetched successfully.",
+        SERVICE_REQUIRED: "Service is required.",
+        START_DATE_REQUIRED: "Start date is required.",
+        END_DATE_REQUIRED: "End date is required.",
+        INVALID_DATE: "Please provide valid booking dates.",
+        INVALID_DATE_RANGE: "Start date must be earlier than end date.",
+    },
+
     COMMON: {
         ALL_FIELDS_REQUIRES: "All fields are required."
     }
