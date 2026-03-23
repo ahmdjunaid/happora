@@ -4,9 +4,15 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 interface AppShellProps extends PropsWithChildren {
   userName?: string
   onLogout?: () => void
+  links?: Array<{ to: string; label: string }>
 }
 
-export const AppShell = ({ userName, onLogout, children }: AppShellProps) => {
+const defaultLinks = [
+  { to: '/', label: 'Explore' },
+  { to: '/my-bookings', label: 'My Bookings' },
+]
+
+export const AppShell = ({ userName, onLogout, links = defaultLinks, children }: AppShellProps) => {
   const navigate = useNavigate()
 
   return (
@@ -25,26 +31,19 @@ export const AppShell = ({ userName, onLogout, children }: AppShellProps) => {
 
             <div className="flex flex-col gap-4 md:flex-row md:items-center">
               <nav className="flex items-center gap-2 rounded-full bg-slate-100 p-1">
-                <NavLink
-                  to="/"
-                  className={({ isActive }) =>
-                    `rounded-full px-4 py-2 text-sm font-medium ${
-                      isActive ? 'bg-white text-brand shadow-sm' : 'text-slate-500'
-                    }`
-                  }
-                >
-                  Explore
-                </NavLink>
-                <NavLink
-                  to="/my-bookings"
-                  className={({ isActive }) =>
-                    `rounded-full px-4 py-2 text-sm font-medium ${
-                      isActive ? 'bg-white text-brand shadow-sm' : 'text-slate-500'
-                    }`
-                  }
-                >
-                  My Bookings
-                </NavLink>
+                {links.map((link) => (
+                  <NavLink
+                    key={link.to}
+                    to={link.to}
+                    className={({ isActive }) =>
+                      `rounded-full px-4 py-2 text-sm font-medium ${
+                        isActive ? 'bg-white text-brand shadow-sm' : 'text-slate-500'
+                      }`
+                    }
+                  >
+                    {link.label}
+                  </NavLink>
+                ))}
               </nav>
 
               <div className="flex items-center gap-3">

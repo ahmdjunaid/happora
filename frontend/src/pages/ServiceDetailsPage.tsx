@@ -81,7 +81,7 @@ export const ServiceDetailsPage = () => {
             </div>
 
             <Link
-              to={`/services/${service.id}/book`}
+              to={`/booking/${service.id}`}
               className="mt-6 inline-flex w-full justify-center rounded-xl bg-brand px-5 py-3 text-sm font-medium text-white"
             >
               Book Now

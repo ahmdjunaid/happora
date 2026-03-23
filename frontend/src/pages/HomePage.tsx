@@ -6,6 +6,7 @@ import { ServiceFilters as FiltersPanel } from '../components/ServiceFilters'
 import { useAuth } from '../routes/AuthProvider'
 import { getAllServices } from '../services/serviceApi'
 import type { Service, ServiceFilters } from '../types/service'
+import { categories as hardcodedCategories } from '../utils/categories'
 import { getActiveServiceFilters } from '../utils/serviceFilters'
 
 const initialFilters: ServiceFilters = {
@@ -49,7 +50,7 @@ export const HomePage = () => {
     await loadServices(filters)
   }
 
-  const categories = [...new Set(services.map((service) => service.category))].sort()
+  const categories = [...new Set([...hardcodedCategories, ...services.map((service) => service.category)])].sort()
 
   return (
     <AppShell userName={user?.name} onLogout={logout}>

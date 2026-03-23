@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react'
 import type { ServiceFilters as ServiceFiltersType } from '../types/service'
+import { categories as hardcodedCategories } from '../utils/categories'
 
 interface ServiceFiltersProps {
   filters: ServiceFiltersType
@@ -43,7 +44,7 @@ export const ServiceFilters = ({
             className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-brand"
           >
             <option value="">All categories</option>
-            {categories.map((category) => (
+            {[...new Set([...hardcodedCategories, ...categories])].map((category) => (
               <option key={category} value={category}>
                 {category}
               </option>

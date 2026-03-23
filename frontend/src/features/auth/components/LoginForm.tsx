@@ -56,7 +56,9 @@ export const LoginForm = ({ onForgotPassword }: LoginFormProps) => {
           ? `${response.message} Welcome back, ${response.user.name}.`
           : response.message,
       )
-      const redirectTo = (location.state as { from?: string } | null)?.from ?? '/'
+      const redirectTo =
+        (location.state as { from?: string } | null)?.from ??
+        (response.user.role === 'ADMIN' ? '/admin/services' : '/')
       navigate(redirectTo, { replace: true })
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'Login failed.')

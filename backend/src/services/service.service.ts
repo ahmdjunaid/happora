@@ -43,33 +43,25 @@ export class ServiceService implements IServiceService {
     };
   }
 
-  private ensureProviderAccess(provider?: AuthenticatedUser): AuthenticatedUser {
+  private ensureAdminAccess(provider?: AuthenticatedUser): AuthenticatedUser {
     if (!provider?.id) {
       throw new AppError(HttpStatus.UNAUTHORIZED, MESSAGES.AUTH.INVALID_CREDENTIALS);
     }
 
     const normalizedRole = provider.role.toUpperCase();
 
-    if (normalizedRole !== UserRole.PROVIDER && normalizedRole !== UserRole.ADMIN) {
-      throw new AppError(HttpStatus.FORBIDDEN, MESSAGES.SERVICE.PROVIDER_ONLY);
+    if (normalizedRole !== UserRole.ADMIN) {
+      throw new AppError(HttpStatus.FORBIDDEN, MESSAGES.SERVICE.ADMIN_ONLY);
     }
 
     return provider;
-  }
-
-  private ensureOwnership(ownerId: string, provider: AuthenticatedUser): void {
-    const normalizedRole = provider.role.toUpperCase();
-
-    if (ownerId !== provider.id && normalizedRole !== UserRole.ADMIN) {
-      throw new AppError(HttpStatus.FORBIDDEN, MESSAGES.SERVICE.UNAUTHORIZED_ACCESS);
-    }
   }
 
   async createService(
     provider: AuthenticatedUser,
     payload: IServicePayload,
   ): Promise<IServiceResponse> {
-    const currentProvider = this.ensureProviderAccess(provider);
+    const currentProvider = this.ensureAdminAccess(provider);
 
     const service = await this._serviceRepository.createService({
       ...payload,
@@ -109,14 +101,12 @@ export class ServiceService implements IServiceService {
     provider: AuthenticatedUser,
     payload: IServicePayload,
   ): Promise<IServiceResponse> {
-    const currentProvider = this.ensureProviderAccess(provider);
+    this.ensureAdminAccess(provider);
     const existingService = await this._serviceRepository.findServiceById(serviceId);
 
     if (!existingService) {
       throw new AppError(HttpStatus.NOT_FOUND, MESSAGES.SERVICE.SERVICE_NOT_FOUND);
     }
-
-    this.ensureOwnership(existingService.providerId.toString(), currentProvider);
 
     const updatedService = await this._serviceRepository.updateService(serviceId, payload);
 
@@ -134,14 +124,12 @@ export class ServiceService implements IServiceService {
     serviceId: string,
     provider: AuthenticatedUser,
   ): Promise<{ message: string }> {
-    const currentProvider = this.ensureProviderAccess(provider);
+    this.ensureAdminAccess(provider);
     const existingService = await this._serviceRepository.findServiceById(serviceId);
 
     if (!existingService) {
       throw new AppError(HttpStatus.NOT_FOUND, MESSAGES.SERVICE.SERVICE_NOT_FOUND);
     }
-
-    this.ensureOwnership(existingService.providerId.toString(), currentProvider);
 
     await this._serviceRepository.updateService(serviceId, { isDeleted: true });
 

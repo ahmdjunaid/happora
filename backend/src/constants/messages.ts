@@ -34,6 +34,7 @@ export const MESSAGES = {
         INVALID_PRICE: "Price per day must be a valid positive number.",
         INVALID_PRICE_RANGE: "Minimum price cannot be greater than maximum price.",
         PROVIDER_ONLY: "Only providers can manage services.",
+        ADMIN_ONLY: "Only admin can manage services.",
         SERVICE_NOT_FOUND: "Service not found.",
         UNAUTHORIZED_ACCESS: "You are not allowed to modify this service.",
     },
