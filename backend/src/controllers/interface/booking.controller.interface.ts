@@ -3,5 +3,6 @@ import { NextFunction, Request, Response } from "express";
 export interface IBookingController {
   bookService(req: Request, res: Response, next: NextFunction): Promise<void>;
   checkAvailability(req: Request, res: Response, next: NextFunction): Promise<void>;
+  getAdminBookings(req: Request, res: Response, next: NextFunction): Promise<void>;
   getMyBookings(req: Request, res: Response, next: NextFunction): Promise<void>;
 }

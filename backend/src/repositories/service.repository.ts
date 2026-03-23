@@ -49,6 +49,10 @@ export class ServiceRepository
     return ServiceModel.find(query).sort({ createdAt: -1 });
   }
 
+  findServicesByProvider(providerId: string): Promise<ServiceDocument[]> {
+    return ServiceModel.find({ providerId, isDeleted: false }).sort({ createdAt: -1 });
+  }
+
   findServiceById(id: string): Promise<ServiceDocument | null> {
     return ServiceModel.findOne({ _id: id, isDeleted: false });
   }

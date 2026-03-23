@@ -20,3 +20,23 @@ export interface BookingAvailabilityResponse {
   available: boolean
   availableSlots: number
 }
+
+export interface AdminBooking {
+  bookingId: string
+  serviceTitle: string
+  serviceCategory: string
+  user: {
+    id: string
+    name: string
+    email: string
+  }
+  startDate: string
+  endDate: string
+  totalPrice: number
+  status: string
+}
+
+export interface AdminBookingsResponse {
+  message: string
+  bookings: AdminBooking[]
+}

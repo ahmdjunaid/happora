@@ -10,7 +10,10 @@ import { AppShell } from '../components/AppShell'
 import { createService, getServiceById, updateService } from '../services/serviceApi'
 import { useAuth } from '../routes/AuthProvider'
 
-const adminLinks = [{ to: '/admin/services', label: 'Manage Services' }]
+const adminLinks = [
+  { to: '/admin/services', label: 'Manage Services' },
+  { to: '/admin/bookings', label: 'Bookings' },
+]
 
 const initialValues: AdminServiceFormValues = {
   title: '',

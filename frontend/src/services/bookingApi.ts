@@ -1,5 +1,6 @@
 import axios from 'axios'
 import type {
+  AdminBookingsResponse,
   Booking,
   BookingAvailabilityResponse,
   BookingsResponse,
@@ -24,6 +25,19 @@ export const getMyBookings = async (): Promise<BookingsResponse> => {
   } catch (error) {
     if (axios.isAxiosError<{ message?: string }>(error)) {
       throw new Error(error.response?.data?.message || 'Failed to fetch bookings.')
+    }
+
+    throw error
+  }
+}
+
+export const getAdminBookings = async (): Promise<AdminBookingsResponse> => {
+  try {
+    const response = await apiClient.get<AdminBookingsResponse>('/bookings/admin')
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError<{ message?: string }>(error)) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch admin bookings.')
     }
 
     throw error

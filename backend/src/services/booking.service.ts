@@ -5,6 +5,8 @@ import { IBookingRepository } from "../repositories/interface/booking.repository
 import { IServiceRepository } from "../repositories/interface/service.repository.interface";
 import { IBookingService } from "./interface/booking.service.interface";
 import {
+  IAdminBookingDto,
+  IAdminBookingListResponse,
   BookingStatus,
   IBookingAvailabilityResponse,
   IBookingDto,
@@ -15,7 +17,8 @@ import {
 import { AppError } from "../middlewares/error.middleware";
 import HttpStatus from "../constants/http.statuscodes";
 import { MESSAGES } from "../constants/messages";
-import { DecodedUser } from "../types/user.types";
+import { DecodedUser, UserRole } from "../types/user.types";
+import { IAdminBookingRecord } from "../repositories/interface/booking.repository.interface";
 
 @injectable()
 export class BookingService implements IBookingService {
@@ -56,6 +59,33 @@ export class BookingService implements IBookingService {
     }
 
     return user;
+  }
+
+  private ensureAdminAccess(user?: DecodedUser): DecodedUser {
+    const currentUser = this.ensureAuthenticatedUser(user);
+
+    if (currentUser.role.toUpperCase() !== UserRole.ADMIN) {
+      throw new AppError(HttpStatus.FORBIDDEN, MESSAGES.BOOKING.ADMIN_ONLY);
+    }
+
+    return currentUser;
+  }
+
+  private sanitizeAdminBooking(booking: IAdminBookingRecord): IAdminBookingDto {
+    return {
+      bookingId: booking._id?.toString() ?? "",
+      serviceTitle: booking.serviceId?.title ?? "",
+      serviceCategory: booking.serviceId?.category ?? "",
+      user: {
+        id: booking.userId?._id?.toString() ?? "",
+        name: booking.userId?.name ?? "",
+        email: booking.userId?.email ?? "",
+      },
+      startDate: booking.startDate,
+      endDate: booking.endDate,
+      totalPrice: booking.totalPrice,
+      status: booking.status as BookingStatus,
+    };
   }
 
   private parseBookingDates(payload: ICreateBookingPayload): {
@@ -196,6 +226,26 @@ export class BookingService implements IBookingService {
     return {
       message: MESSAGES.BOOKING.FETCHED_SUCCESS,
       bookings: bookings.map((booking) => this.sanitizeBooking(booking)),
+    };
+  }
+
+  async getAdminBookings(user: DecodedUser): Promise<IAdminBookingListResponse> {
+    const currentAdmin = this.ensureAdminAccess(user);
+    const services = await this._serviceRepository.findServicesByProvider(currentAdmin.sub);
+    const serviceIds = services.map((service) => service._id.toString());
+
+    if (serviceIds.length === 0) {
+      return {
+        message: MESSAGES.BOOKING.ADMIN_FETCHED_SUCCESS,
+        bookings: [],
+      };
+    }
+
+    const bookings = await this._bookingRepository.findBookingsByServiceIds(serviceIds);
+
+    return {
+      message: MESSAGES.BOOKING.ADMIN_FETCHED_SUCCESS,
+      bookings: bookings.map((booking) => this.sanitizeAdminBooking(booking)),
     };
   }
 }

@@ -61,4 +61,18 @@ export class BookingController implements IBookingController {
       next(error);
     }
   };
+
+  getAdminBookings = async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const response = await this._bookingService.getAdminBookings(req.user!);
+
+      res.status(HttpStatus.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
 }

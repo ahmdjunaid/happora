@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AdminRoute } from '../components/AdminRoute'
 import { ProtectedRoute } from '../components/ProtectedRoute'
 import { AuthPage } from '../features/auth/pages/AuthPage'
+import { AdminBookingsPage } from '../pages/AdminBookingsPage'
 import { AdminServiceFormPage } from '../pages/AdminServiceFormPage'
 import { AdminServicesPage } from '../pages/AdminServicesPage'
 import { BookingPage } from '../pages/BookingPage'
@@ -28,6 +29,7 @@ export const AppRoutes = () => {
             <Route path="/admin/services" element={<AdminServicesPage />} />
             <Route path="/admin/services/add" element={<AdminServiceFormPage />} />
             <Route path="/admin/services/edit/:id" element={<AdminServiceFormPage />} />
+            <Route path="/admin/bookings" element={<AdminBookingsPage />} />
           </Route>
         </Routes>
       </AuthProvider>

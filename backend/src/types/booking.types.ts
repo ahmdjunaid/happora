@@ -28,6 +28,21 @@ export interface IBookingAvailabilityResponse {
   availableSlots: number;
 }
 
+export interface IAdminBookingDto {
+  bookingId: string;
+  serviceTitle: string;
+  serviceCategory: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  startDate: Date;
+  endDate: Date;
+  totalPrice: number;
+  status: BookingStatus;
+}
+
 export interface IBookingDto {
   id: string;
   serviceId: string;
@@ -48,4 +63,9 @@ export interface IBookingResponse {
 export interface IBookingListResponse {
   message: string;
   bookings: IBookingDto[];
+}
+
+export interface IAdminBookingListResponse {
+  message: string;
+  bookings: IAdminBookingDto[];
 }

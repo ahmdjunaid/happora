@@ -2,7 +2,10 @@ import { injectable } from "inversify";
 import { BaseRepository } from "./base.repository";
 import { BookingDocument, BookingModel } from "../model/booking.model";
 import { IBooking } from "../types/booking.types";
-import { IBookingRepository } from "./interface/booking.repository.interface";
+import {
+  IAdminBookingRecord,
+  IBookingRepository,
+} from "./interface/booking.repository.interface";
 
 @injectable()
 export class BookingRepository
@@ -19,6 +22,18 @@ export class BookingRepository
 
   findBookingsByUser(userId: string): Promise<BookingDocument[]> {
     return BookingModel.find({ userId, isDeleted: false }).sort({ createdAt: -1 });
+  }
+
+  findBookingsByServiceIds(serviceIds: string[]): Promise<IAdminBookingRecord[]> {
+    return BookingModel.find({
+      serviceId: { $in: serviceIds },
+      isDeleted: false,
+    })
+      .populate("serviceId", "title category")
+      .populate("userId", "name email")
+      .sort({ createdAt: -1 })
+      .lean<IAdminBookingRecord[]>()
+      .exec();
   }
 
   findOverlappingBookings(

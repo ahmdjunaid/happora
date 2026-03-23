@@ -5,7 +5,10 @@ import { deleteService, getAllServices } from '../services/serviceApi'
 import type { Service } from '../types/service'
 import { useAuth } from '../routes/AuthProvider'
 
-const adminLinks = [{ to: '/admin/services', label: 'Manage Services' }]
+const adminLinks = [
+  { to: '/admin/services', label: 'Manage Services' },
+  { to: '/admin/bookings', label: 'Bookings' },
+]
 
 export const AdminServicesPage = () => {
   const { user, logout } = useAuth()
