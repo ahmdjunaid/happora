@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { Service } from '../types/service'
 
 interface ServiceCardProps {
@@ -25,12 +26,12 @@ export const ServiceCard = ({ service }: ServiceCardProps) => {
         <p className="font-medium text-slate-600">{service.location}</p>
       </div>
 
-      <button
-        type="button"
+      <Link
+        to={`/services/${service.id}`}
         className="mt-5 inline-flex rounded-xl bg-brand px-4 py-2.5 text-sm font-medium text-white"
       >
         View Service
-      </button>
+      </Link>
     </article>
   )
 }

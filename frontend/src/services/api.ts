@@ -6,3 +6,12 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   },
 })
+
+export const setApiToken = (token: string) => {
+  if (token.trim()) {
+    api.defaults.headers.common.Authorization = `Bearer ${token}`
+    return
+  }
+
+  delete api.defaults.headers.common.Authorization
+}

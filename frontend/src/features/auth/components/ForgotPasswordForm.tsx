@@ -48,10 +48,12 @@ export const ForgotPasswordForm = () => {
   }
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit}>
-      <div className="auth-copy">
-        <h2>Forgot password</h2>
-        <p>Enter your booking email and request quick recovery help.</p>
+    <form className="space-y-4" onSubmit={handleSubmit}>
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold text-slate-900">Forgot password</h2>
+        <p className="mt-2 text-sm text-slate-500">
+          Enter your booking email and request quick recovery help.
+        </p>
       </div>
 
       <AuthStatus error={error} success={success} />
@@ -65,7 +67,11 @@ export const ForgotPasswordForm = () => {
         onChange={updateField}
       />
 
-      <button className="auth-submit" type="submit" disabled={isSubmitting}>
+      <button
+        className="rounded-xl bg-brand px-5 py-3 text-sm font-medium text-white"
+        type="submit"
+        disabled={isSubmitting}
+      >
         {isSubmitting ? 'Generating token...' : 'Request assistance'}
       </button>
     </form>

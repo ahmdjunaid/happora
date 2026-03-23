@@ -18,3 +18,8 @@ export interface ServicesResponse {
   message: string
   services: Service[]
 }
+
+export interface ServiceResponse {
+  message: string
+  service: Service
+}

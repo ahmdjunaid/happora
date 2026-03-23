@@ -19,6 +19,7 @@ import {
   hashResetToken,
   normalizeEmail,
 } from "../utils/auth.util";
+import { generateAuthToken } from "../utils/jwt.util";
 
 @injectable()
 export class UserService implements IUserService {
@@ -51,9 +52,12 @@ export class UserService implements IUserService {
             password: hashedPassword,
         });
 
+        const sanitizedUser = this.sanitizeUser(user);
+
         return {
             message: MESSAGES.AUTH.REGISTER_SUCCESS,
-            user: this.sanitizeUser(user),
+            user: sanitizedUser,
+            token: generateAuthToken(sanitizedUser),
         };
     }
 
@@ -74,9 +78,12 @@ export class UserService implements IUserService {
             throw new AppError(HttpStatus.UNAUTHORIZED, MESSAGES.AUTH.INVALID_CREDENTIALS);
         }
 
+        const sanitizedUser = this.sanitizeUser(user);
+
         return {
             message: MESSAGES.AUTH.LOGIN_SUCCESS,
-            user: this.sanitizeUser(user),
+            user: sanitizedUser,
+            token: generateAuthToken(sanitizedUser),
         };
     }
 
