@@ -1,7 +1,9 @@
 import type { FormEvent } from 'react'
 import { useEffect, useState } from 'react'
+import { AppShell } from '../components/AppShell'
 import { ServiceCard } from '../components/ServiceCard'
 import { ServiceFilters as FiltersPanel } from '../components/ServiceFilters'
+import { useAuth } from '../routes/AuthProvider'
 import { getAllServices } from '../services/serviceApi'
 import type { Service, ServiceFilters } from '../types/service'
 import { getActiveServiceFilters } from '../utils/serviceFilters'
@@ -13,6 +15,7 @@ const initialFilters: ServiceFilters = {
 }
 
 export const HomePage = () => {
+  const { user, logout } = useAuth()
   const [services, setServices] = useState<Service[]>([])
   const [filters, setFilters] = useState<ServiceFilters>(initialFilters)
   const [loading, setLoading] = useState(false)
@@ -49,8 +52,7 @@ export const HomePage = () => {
   const categories = [...new Set(services.map((service) => service.category))].sort()
 
   return (
-    <div className="min-h-screen px-5 py-6 md:px-8 lg:px-10">
-      <div className="mx-auto max-w-7xl">
+    <AppShell userName={user?.name} onLogout={logout}>
         <header className="mb-8 rounded-[2rem] border border-slate-200/80 bg-white/90 px-6 py-6 shadow-sm backdrop-blur md:px-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
@@ -117,7 +119,6 @@ export const HomePage = () => {
             )}
           </section>
         </div>
-      </div>
-    </div>
+    </AppShell>
   )
 }

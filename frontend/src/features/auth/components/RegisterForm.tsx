@@ -1,11 +1,15 @@
 import type { FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { authApi } from '../api/authApi'
 import { isStrongPassword, isValidEmail } from '../../../shared/lib/validation'
 import { useAuthForm } from '../hooks/useAuthForm'
 import { AuthField } from './AuthField'
 import { AuthStatus } from './AuthStatus'
+import { useAuth } from '../../../routes/AuthProvider'
 
 export const RegisterForm = () => {
+  const navigate = useNavigate()
+  const { login } = useAuth()
   const {
     formData,
     updateField,
@@ -44,11 +48,16 @@ export const RegisterForm = () => {
     try {
       setIsSubmitting(true)
       const response = await authApi.register(formData)
+      if (!response.token || !response.user) {
+        throw new Error('Registration response did not include a token.')
+      }
+      login(response.token, response.user)
       setSuccess(
         response.user
           ? `${response.message} Account created for ${response.user.email}.`
           : response.message,
       )
+      navigate('/', { replace: true })
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'Registration failed.')
     } finally {
@@ -57,10 +66,12 @@ export const RegisterForm = () => {
   }
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit}>
-      <div className="auth-copy">
-        <h2>Create account</h2>
-        <p>Create your guest account to reserve seats and manage upcoming bookings.</p>
+    <form className="space-y-4" onSubmit={handleSubmit}>
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold text-slate-900">Create account</h2>
+        <p className="mt-2 text-sm text-slate-500">
+          Create your guest account to reserve seats and manage upcoming bookings.
+        </p>
       </div>
 
       <AuthStatus error={error} success={success} />
@@ -89,7 +100,11 @@ export const RegisterForm = () => {
         onChange={updateField}
       />
 
-      <button className="auth-submit" type="submit" disabled={isSubmitting}>
+      <button
+        className="rounded-xl bg-brand px-5 py-3 text-sm font-medium text-white"
+        type="submit"
+        disabled={isSubmitting}
+      >
         {isSubmitting ? 'Creating account...' : 'Register'}
       </button>
     </form>

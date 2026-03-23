@@ -9,7 +9,13 @@ export const AuthStatus = ({ error, success }: AuthStatusProps) => {
   }
 
   return (
-    <div className={error ? 'auth-status auth-status--error' : 'auth-status auth-status--success'}>
+    <div
+      className={
+        error
+          ? 'rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600'
+          : 'rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700'
+      }
+    >
       {error || success}
     </div>
   )

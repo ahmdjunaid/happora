@@ -27,6 +27,7 @@ export interface IUserProfile {
 export interface IAuthResponse {
   message: string;
   user: IUserProfile;
+  token: string;
 }
 
 export interface IForgotPasswordResponse {
