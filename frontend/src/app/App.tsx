@@ -1,7 +1,7 @@
-import { EventPlatformPage } from '../features/platform/pages/EventPlatformPage'
+import { AppRoutes } from '../routes/AppRoutes'
 
 function App() {
-  return <EventPlatformPage />
+  return <AppRoutes />
 }
 
 export default App
