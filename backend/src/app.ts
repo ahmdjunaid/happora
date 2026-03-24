@@ -15,9 +15,21 @@ const app = express();
 
 // Security middlewares
 app.use(helmet());
+
+const allowedOrigins = [
+  process.env.DEV_CLIENT_URL,
+  process.env.PROD_CLIENT_URL,
+];
+
 app.use(
   cors({
-    origin: process.env.DEV_CLIENT_URL,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
