@@ -9,7 +9,7 @@ export const MESSAGES = {
         EMAIL_REQUIRED: "Email is required.",
         INVALID_EMAIL: "Please provide a valid email address.",
         PASSWORD_REQUIRED: "Password is required.",
-        PASSWORD_MIN_LENGTH: "Password must be at least 6 characters long.",
+        PASSWORD: "Password must be 8+ chars with uppercase, lowercase, number, and special character.",
         ROLE_REQUIRED: "Role is required.",
         INVALID_ROLE: "Invalid role provided.",
         USER_ALREADY_EXISTS: "User already exists with this email.",

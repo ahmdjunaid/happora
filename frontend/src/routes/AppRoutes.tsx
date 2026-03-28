@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AdminRoute } from '../components/AdminRoute'
-import { ProtectedRoute } from '../components/ProtectedRoute'
+import { UserRoute } from '../components/UserRoute'
 import { AuthPage } from '../features/auth/pages/AuthPage'
 import { VerifyOtpPage } from '../features/auth/pages/VerifyOtpPage'
 import { AdminBookingsPage } from '../pages/AdminBookingsPage'
@@ -20,7 +20,7 @@ export const AppRoutes = () => {
           <Route path="/login" element={<AuthPage />} />
           <Route path="/verify-otp" element={<VerifyOtpPage />} />
 
-          <Route element={<ProtectedRoute />}>
+          <Route element={<UserRoute />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/services/:id" element={<ServiceDetailsPage />} />
             <Route path="/booking/:id" element={<BookingPage />} />

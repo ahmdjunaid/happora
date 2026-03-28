@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     () => ({
       user,
       token,
-      isAuthenticated: Boolean(token),
+      isAuthenticated: Boolean(token && user),
       login: (nextToken, nextUser) => {
         setToken(nextToken)
         setUser(nextUser)

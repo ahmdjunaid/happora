@@ -5,6 +5,7 @@ import { EMAIL_REGEX } from "./auth.util";
 import { UserRole } from "../types/user.types";
 
 const assertString = (value: unknown): string => (typeof value === "string" ? value.trim() : "");
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
 
 export const validateName = (value: unknown): string => {
   const name = assertString(value);
@@ -38,8 +39,8 @@ export const validatePassword = (value: unknown): string => {
     throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.AUTH.PASSWORD_REQUIRED);
   }
 
-  if (password.length < 6) {
-    throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.AUTH.PASSWORD_MIN_LENGTH);
+  if (!passwordRegex.test(password)) {
+    throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.AUTH.PASSWORD);
   }
 
   return password;

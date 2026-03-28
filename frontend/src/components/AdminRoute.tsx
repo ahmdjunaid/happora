@@ -3,12 +3,13 @@ import { useAuth } from '../routes/AuthProvider'
 
 export const AdminRoute = () => {
   const { isAuthenticated, user } = useAuth()
+  const normalizedRole = user?.role?.toUpperCase()
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />
   }
 
-  if (user?.role !== 'ADMIN') {
+  if (normalizedRole !== 'ADMIN') {
     return <Navigate to="/" replace />
   }
 
