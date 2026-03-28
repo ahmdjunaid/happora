@@ -19,7 +19,9 @@ export const AdminServicesPage = () => {
     try {
       setError('')
       const response = await getAllServices({})
-      setServices(response.services)
+      setServices(
+        response.services.filter((service) => service.providerId === user?.id),
+      )
     } catch (requestError) {
       setError(
         requestError instanceof Error ? requestError.message : 'Failed to load services.',
@@ -28,8 +30,12 @@ export const AdminServicesPage = () => {
   }
 
   useEffect(() => {
+    if (!user?.id) {
+      return
+    }
+
     void loadServices()
-  }, [])
+  }, [user?.id])
 
   const handleDelete = async (id: string) => {
     try {

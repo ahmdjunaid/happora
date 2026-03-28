@@ -60,6 +60,15 @@ export class ServiceService implements IServiceService {
     return provider;
   }
 
+  private ensureServiceOwnership(
+    providerId: Types.ObjectId,
+    currentAdminId: string,
+  ): void {
+    if (providerId.toString() !== currentAdminId) {
+      throw new AppError(HttpStatus.FORBIDDEN, MESSAGES.SERVICE.UNAUTHORIZED_ACCESS);
+    }
+  }
+
   async createService(
     provider: DecodedUser,
     payload: IServicePayload,
@@ -104,12 +113,14 @@ export class ServiceService implements IServiceService {
     provider: DecodedUser,
     payload: IServicePayload,
   ): Promise<IServiceResponse> {
-    this.ensureAdminAccess(provider);
+    const currentProvider = this.ensureAdminAccess(provider);
     const existingService = await this._serviceRepository.findServiceById(serviceId);
 
     if (!existingService) {
       throw new AppError(HttpStatus.NOT_FOUND, MESSAGES.SERVICE.SERVICE_NOT_FOUND);
     }
+
+    this.ensureServiceOwnership(existingService.providerId, currentProvider.sub);
 
     const updatedService = await this._serviceRepository.updateService(serviceId, payload);
 
@@ -127,12 +138,14 @@ export class ServiceService implements IServiceService {
     serviceId: string,
     provider: DecodedUser,
   ): Promise<{ message: string }> {
-    this.ensureAdminAccess(provider);
+    const currentProvider = this.ensureAdminAccess(provider);
     const existingService = await this._serviceRepository.findServiceById(serviceId);
 
     if (!existingService) {
       throw new AppError(HttpStatus.NOT_FOUND, MESSAGES.SERVICE.SERVICE_NOT_FOUND);
     }
+
+    this.ensureServiceOwnership(existingService.providerId, currentProvider.sub);
 
     await this._serviceRepository.updateService(serviceId, { isDeleted: true });
 

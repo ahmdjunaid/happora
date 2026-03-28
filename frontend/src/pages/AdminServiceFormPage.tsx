@@ -33,13 +33,17 @@ export const AdminServiceFormPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
-    if (!id) {
+    if (!id || !user?.id) {
       return
     }
 
     const loadService = async () => {
       try {
         const response = await getServiceById(id)
+        if (response.service.providerId !== user.id) {
+          navigate('/admin/services', { replace: true })
+          return
+        }
         setValues({
           title: response.service.title,
           category: response.service.category,
@@ -56,7 +60,7 @@ export const AdminServiceFormPage = () => {
     }
 
     void loadService()
-  }, [id])
+  }, [id, navigate, user?.id])
 
   const handleChange = (name: keyof AdminServiceFormValues, value: string) => {
     setValues((current) => ({ ...current, [name]: value }))
