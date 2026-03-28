@@ -18,6 +18,16 @@ export interface IUser {
   role: UserRole;
   isDeleted: boolean;
   isBlocked: boolean;
+  isVerified: boolean;
+}
+
+export interface IPendingSignup {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  otp: string;
+  otpExpiresAt: Date;
 }
 
 export interface IUserProfile {
@@ -32,4 +42,9 @@ export interface IAuthResponse {
   message: string;
   user: IUserProfile;
   token: string;
+}
+
+export interface IOtpDispatchResponse {
+  message: string;
+  email: string;
 }

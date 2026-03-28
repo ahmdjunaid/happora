@@ -6,8 +6,8 @@ export const useAuthForm = <TData extends Record<string, string>>(initialState: 
   const [success, setSuccess] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const updateField = (name: keyof TData, value: string) => {
-    setFormData((current) => ({ ...current, [name]: value }))
+  const updateField = (name: string, value: string) => {
+    setFormData((current) => ({ ...current, [name as keyof TData]: value }))
   }
 
   const resetMessages = () => {

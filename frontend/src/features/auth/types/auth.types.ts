@@ -7,6 +7,17 @@ export interface LoginPayload {
 
 export interface RegisterPayload extends LoginPayload {
   name: string
+  confirmPassword: string
+}
+
+export interface VerifyOtpPayload {
+  email: string
+  otp: string
+}
+
+export interface RegisterResponse {
+  message: string
+  email: string
 }
 
 export interface AuthUser {

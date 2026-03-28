@@ -9,6 +9,7 @@ const userSchema = new Schema<IUser>(
     role: { type: String, enum: Object.values(UserRole), default: UserRole.CUSTOMER },
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

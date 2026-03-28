@@ -1,7 +1,8 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AdminRoute } from '../components/AdminRoute'
 import { ProtectedRoute } from '../components/ProtectedRoute'
 import { AuthPage } from '../features/auth/pages/AuthPage'
+import { VerifyOtpPage } from '../features/auth/pages/VerifyOtpPage'
 import { AdminBookingsPage } from '../pages/AdminBookingsPage'
 import { AdminServiceFormPage } from '../pages/AdminServiceFormPage'
 import { AdminServicesPage } from '../pages/AdminServicesPage'
@@ -17,6 +18,7 @@ export const AppRoutes = () => {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<AuthPage />} />
+          <Route path="/verify-otp" element={<VerifyOtpPage />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<HomePage />} />
@@ -31,6 +33,8 @@ export const AppRoutes = () => {
             <Route path="/admin/services/edit/:id" element={<AdminServiceFormPage />} />
             <Route path="/admin/bookings" element={<AdminBookingsPage />} />
           </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

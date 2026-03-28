@@ -1,23 +1,26 @@
 export const MESSAGES = {
     AUTH: {
-        REGISTER_SUCCESS: "User registered successfully.",
+        REGISTER_SUCCESS: "OTP sent to your email address.",
+        OTP_RESENT_SUCCESS: "OTP resent successfully.",
+        OTP_VERIFIED_SUCCESS: "OTP verified successfully.",
         LOGIN_SUCCESS: "Login successful.",
-        FORGOT_PASSWORD_SUCCESS: "Password reset instructions generated successfully.",
-        RESET_PASSWORD_SUCCESS: "Password reset successful.",
         NAME_REQUIRED: "Name is required.",
         INVALID_NAME: "Name must be at least 2 characters long.",
         EMAIL_REQUIRED: "Email is required.",
         INVALID_EMAIL: "Please provide a valid email address.",
         PASSWORD_REQUIRED: "Password is required.",
-        PASSWORD_MIN_LENGTH: "Password must be at least 8 characters long.",
+        PASSWORD_MIN_LENGTH: "Password must be at least 6 characters long.",
         ROLE_REQUIRED: "Role is required.",
         INVALID_ROLE: "Invalid role provided.",
         USER_ALREADY_EXISTS: "User already exists with this email.",
         INVALID_CREDENTIALS: "Invalid email or password.",
         USER_BLOCKED: "This account has been blocked.",
         USER_NOT_FOUND: "User not found.",
-        RESET_TOKEN_REQUIRED: "Reset token is required.",
-        INVALID_RESET_TOKEN: "Invalid or expired reset token.",
+        OTP_REQUIRED: "OTP is required.",
+        INVALID_OTP: "OTP must be a valid 6 digit number.",
+        INVALID_OR_EXPIRED_OTP: "Invalid or expired OTP.",
+        EMAIL_SERVICE_NOT_CONFIGURED: "Email service is not configured.",
+        EMAIL_SEND_FAILED: "Failed to send OTP email.",
     },
 
     SERVICE: {
@@ -54,6 +57,7 @@ export const MESSAGES = {
         INVALID_DATE_RANGE: "Start date must be earlier than end date.",
         NO_SLOTS_AVAILABLE_FOR_DATE: "No slots available for selected date",
         ADMIN_ONLY: "Only admin can access these bookings.",
+        PAST_DATE_NOT_ALLOWED: "Cannot book for past dates",
     },
 
     COMMON: {

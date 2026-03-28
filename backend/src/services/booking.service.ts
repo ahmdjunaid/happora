@@ -95,6 +95,12 @@ export class BookingService implements IBookingService {
   } {
     const startDate = new Date(payload.startDate);
     const endDate = new Date(payload.endDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (startDate.getTime() < today.getTime()) {
+      throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.BOOKING.PAST_DATE_NOT_ALLOWED);
+    }
 
     if (startDate.getTime() >= endDate.getTime()) {
       throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.BOOKING.INVALID_DATE_RANGE);

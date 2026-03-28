@@ -38,11 +38,25 @@ export const validatePassword = (value: unknown): string => {
     throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.AUTH.PASSWORD_REQUIRED);
   }
 
-  if (password.length < 8) {
+  if (password.length < 6) {
     throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.AUTH.PASSWORD_MIN_LENGTH);
   }
 
   return password;
+};
+
+export const validateOtp = (value: unknown): string => {
+  const otp = assertString(value);
+
+  if (!otp) {
+    throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.AUTH.OTP_REQUIRED);
+  }
+
+  if (!/^\d{6}$/.test(otp)) {
+    throw new AppError(HttpStatus.BAD_REQUEST, MESSAGES.AUTH.INVALID_OTP);
+  }
+
+  return otp;
 };
 
 export const validateRole = (value: unknown): UserRole => {

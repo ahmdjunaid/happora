@@ -35,3 +35,6 @@ export const comparePassword = async (
 
   return timingSafeEqual(storedBuffer, derivedKey);
 };
+
+export const generateOtp = (): string =>
+  Math.floor(100000 + Math.random() * 900000).toString();

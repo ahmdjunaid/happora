@@ -1,15 +1,13 @@
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '../api/authApi'
-import { isStrongPassword, isValidEmail } from '../../../shared/lib/validation'
+import { hasMinimumPasswordLength, isValidEmail } from '../../../shared/lib/validation'
 import { useAuthForm } from '../hooks/useAuthForm'
 import { AuthField } from './AuthField'
 import { AuthStatus } from './AuthStatus'
-import { useAuth } from '../../../routes/AuthProvider'
 
 export const RegisterForm = () => {
   const navigate = useNavigate()
-  const { login } = useAuth()
   const {
     formData,
     updateField,
@@ -24,40 +22,45 @@ export const RegisterForm = () => {
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
   })
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     resetMessages()
 
-    if (formData.name.trim().length < 2) {
-      setError('Name must be at least 2 characters long.')
+    if (!formData.name.trim()) {
+      setError('Name is required.')
       return
     }
 
     if (!isValidEmail(formData.email)) {
-      setError('Enter a valid email address.')
+      setError(formData.email.trim() ? 'Enter a valid email address.' : 'Email is required.')
       return
     }
 
-    if (!isStrongPassword(formData.password)) {
-      setError('Password must be at least 8 characters long.')
+    if (!formData.password.trim()) {
+      setError('Password is required.')
+      return
+    }
+
+    if (!hasMinimumPasswordLength(formData.password)) {
+      setError('Password must be at least 6 characters long.')
+      return
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Confirm password must match.')
       return
     }
 
     try {
       setIsSubmitting(true)
       const response = await authApi.register(formData)
-      if (!response.token || !response.user) {
-        throw new Error('Registration response did not include a token.')
-      }
-      login(response.token, response.user)
-      setSuccess(
-        response.user
-          ? `${response.message} Account created for ${response.user.email}.`
-          : response.message,
-      )
-      navigate('/', { replace: true })
+      setSuccess(`${response.message} Verify the OTP sent to ${response.email}.`)
+      navigate(`/verify-otp?email=${encodeURIComponent(response.email)}`, {
+        replace: true,
+      })
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'Registration failed.')
     } finally {
@@ -95,8 +98,16 @@ export const RegisterForm = () => {
         label="Password"
         name="password"
         type="password"
-        placeholder="Minimum 8 characters"
+        placeholder="Minimum 6 characters"
         value={formData.password}
+        onChange={updateField}
+      />
+      <AuthField
+        label="Confirm password"
+        name="confirmPassword"
+        type="password"
+        placeholder="Re-enter your password"
+        value={formData.confirmPassword}
         onChange={updateField}
       />
 

@@ -1,7 +1,7 @@
 import type { FormEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { authApi } from '../api/authApi'
-import { isStrongPassword, isValidEmail } from '../../../shared/lib/validation'
+import { hasMinimumPasswordLength, isValidEmail } from '../../../shared/lib/validation'
 import { useAuthForm } from '../hooks/useAuthForm'
 import { AuthField } from './AuthField'
 import { AuthStatus } from './AuthStatus'
@@ -35,8 +35,8 @@ export const LoginForm = () => {
       return
     }
 
-    if (!isStrongPassword(formData.password)) {
-      setError('Password must be at least 8 characters long.')
+    if (!hasMinimumPasswordLength(formData.password)) {
+      setError('Password must be at least 6 characters long.')
       return
     }
 
@@ -86,7 +86,7 @@ export const LoginForm = () => {
         label="Password"
         name="password"
         type="password"
-        placeholder="Minimum 8 characters"
+        placeholder="Minimum 6 characters"
         value={formData.password}
         onChange={updateField}
       />

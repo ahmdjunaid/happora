@@ -3,6 +3,8 @@ import type {
   AuthResponse,
   LoginPayload,
   RegisterPayload,
+  RegisterResponse,
+  VerifyOtpPayload,
 } from '../types/auth.types'
 import { apiClient } from '../../../shared/lib/api'
 
@@ -25,9 +27,27 @@ export const authApi = {
     }
   },
 
-  async register(payload: RegisterPayload): Promise<AuthResponse> {
+  async register(payload: RegisterPayload): Promise<RegisterResponse> {
     try {
-      const response = await apiClient.post<AuthResponse>('/auth/register', payload)
+      const response = await apiClient.post<RegisterResponse>('/auth/register', payload)
+      return response.data
+    } catch (error) {
+      return handleError(error)
+    }
+  },
+
+  async verifyOtp(payload: VerifyOtpPayload): Promise<AuthResponse> {
+    try {
+      const response = await apiClient.post<AuthResponse>('/auth/verify-otp', payload)
+      return response.data
+    } catch (error) {
+      return handleError(error)
+    }
+  },
+
+  async resendOtp(email: string): Promise<RegisterResponse> {
+    try {
+      const response = await apiClient.post<RegisterResponse>('/auth/resend-otp', { email })
       return response.data
     } catch (error) {
       return handleError(error)

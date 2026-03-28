@@ -3,6 +3,7 @@ import { AppShell } from '../components/AppShell'
 import { getMyBookings } from '../services/bookingApi'
 import type { Booking } from '../types/booking'
 import { useAuth } from '../routes/AuthProvider'
+import { formatLocalDateRange } from '../utils/dateFormatter'
 
 export const MyBookingsPage = () => {
   const { user, logout } = useAuth()
@@ -61,8 +62,7 @@ export const MyBookingsPage = () => {
                       Service #{booking.serviceId.slice(0, 8)}
                     </h2>
                     <p className="mt-1 text-sm text-slate-500">
-                      {new Date(booking.startDate).toLocaleDateString()} to{' '}
-                      {new Date(booking.endDate).toLocaleDateString()}
+                      {formatLocalDateRange(booking.startDate, booking.endDate)}
                     </p>
                   </div>
 

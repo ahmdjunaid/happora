@@ -8,6 +8,7 @@ import HttpStatus from "../constants/http.statuscodes";
 import {
   validateEmail,
   validateName,
+  validateOtp,
   validatePassword,
   validateRole,
 } from "../utils/auth.validation";
@@ -31,6 +32,29 @@ export class AuthController implements IAuthController {
       });
 
       res.status(HttpStatus.CREATED).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  verifyOtp = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const email = validateEmail(req.body.email);
+      const otp = validateOtp(req.body.otp);
+      const response = await this._userService.verifyOtp(email, otp);
+
+      res.status(HttpStatus.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  resendOtp = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const email = validateEmail(req.body.email);
+      const response = await this._userService.resendOtp(email);
+
+      res.status(HttpStatus.OK).json(response);
     } catch (error) {
       next(error);
     }

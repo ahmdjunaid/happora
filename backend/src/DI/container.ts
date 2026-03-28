@@ -1,8 +1,10 @@
 import "reflect-metadata";
 import { Container } from "inversify";
 import { IUserRepository } from "../repositories/interface/user.repository.interface";
+import { IPendingSignupRepository } from "../repositories/interface/pendingSignup.repository.interface";
 import { TYPES } from "./types";
 import { UserRepository } from "../repositories/user.repository";
+import { PendingSignupRepository } from "../repositories/pendingSignup.repository";
 import { IUserService } from "../services/interface/user.service.interface";
 import { UserService } from "../services/user.service";
 import { IAuthController } from "../controllers/interface/auth.controller.interface";
@@ -24,6 +26,7 @@ const container = new Container()
 
 //User
 container.bind<IUserRepository>(TYPES.UserRepository).to(UserRepository);
+container.bind<IPendingSignupRepository>(TYPES.PendingSignupRepository).to(PendingSignupRepository);
 container.bind<IUserService>(TYPES.UserService).to(UserService);
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController)
 container.bind<IServiceRepository>(TYPES.ServiceRepository).to(ServiceRepository);

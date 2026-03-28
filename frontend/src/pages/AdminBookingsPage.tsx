@@ -3,18 +3,12 @@ import { AppShell } from '../components/AppShell'
 import { useAuth } from '../routes/AuthProvider'
 import { getAdminBookings } from '../services/bookingApi'
 import type { AdminBooking } from '../types/booking'
+import { formatLocalDateRange } from '../utils/dateFormatter'
 
 const adminLinks = [
   { to: '/admin/services', label: 'Manage Services' },
   { to: '/admin/bookings', label: 'Bookings' },
 ]
-
-const formatDateRange = (startDate: string, endDate: string): string => {
-  const start = new Date(startDate).toLocaleDateString()
-  const end = new Date(endDate).toLocaleDateString()
-
-  return `${start} - ${end}`
-}
 
 export const AdminBookingsPage = () => {
   const { user, logout } = useAuth()
@@ -98,7 +92,7 @@ export const AdminBookingsPage = () => {
                       <p className="text-slate-500">{booking.user.email}</p>
                     </td>
                     <td className="px-4 py-4 text-slate-600">
-                      {formatDateRange(booking.startDate, booking.endDate)}
+                      {formatLocalDateRange(booking.startDate, booking.endDate)}
                     </td>
                     <td className="px-4 py-4 font-medium text-slate-900">
                       Rs. {booking.totalPrice}

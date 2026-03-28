@@ -11,6 +11,7 @@ import { getServiceById } from '../services/serviceApi'
 import type { BookingAvailabilityResponse } from '../types/booking'
 import type { Service } from '../types/service'
 import { calculateBookingDays } from '../utils/calculateBooking'
+import { getTodayDateValue } from '../utils/dateFormatter'
 
 export const BookingPage = () => {
   const { id = '' } = useParams()
@@ -24,6 +25,7 @@ export const BookingPage = () => {
   const [availabilityError, setAvailabilityError] = useState('')
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const minimumStartDate = getTodayDateValue()
 
   useEffect(() => {
     const loadService = async () => {
@@ -83,6 +85,11 @@ export const BookingPage = () => {
     event.preventDefault()
 
     if (!service || isFullyBooked || (availability && !availability.available)) {
+      return
+    }
+
+    if (startDate < minimumStartDate) {
+      setError('Cannot book for past dates.')
       return
     }
 
@@ -148,7 +155,13 @@ export const BookingPage = () => {
             <input
               type="date"
               value={startDate}
-              onChange={(event) => setStartDate(event.target.value)}
+              min={minimumStartDate}
+              onChange={(event) => {
+                setStartDate(event.target.value)
+                if (endDate && event.target.value > endDate) {
+                  setEndDate('')
+                }
+              }}
               required
               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 focus:border-brand focus:outline-none"
             />
@@ -159,6 +172,7 @@ export const BookingPage = () => {
             <input
               type="date"
               value={endDate}
+              min={startDate || minimumStartDate}
               onChange={(event) => setEndDate(event.target.value)}
               required
               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 focus:border-brand focus:outline-none"
