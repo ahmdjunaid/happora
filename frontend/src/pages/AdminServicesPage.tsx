@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
-import { deleteService, getAllServices } from '../services/serviceApi'
+import { deleteService, getAdminServices } from '../services/serviceApi'
 import type { Service } from '../types/service'
 import { useAuth } from '../routes/AuthProvider'
 
@@ -18,10 +18,8 @@ export const AdminServicesPage = () => {
   const loadServices = async () => {
     try {
       setError('')
-      const response = await getAllServices({})
-      setServices(
-        response.services.filter((service) => service.providerId === user?.id),
-      )
+      const response = await getAdminServices()
+      setServices(response.services)
     } catch (requestError) {
       setError(
         requestError instanceof Error ? requestError.message : 'Failed to load services.',

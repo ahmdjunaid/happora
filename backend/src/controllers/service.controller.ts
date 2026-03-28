@@ -50,6 +50,20 @@ export class ServiceController implements IServiceController {
     }
   };
 
+  getAdminServices = async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const response = await this._serviceService.getAdminServices(req.user!);
+
+      res.status(HttpStatus.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getServiceById = async (
     req: AuthenticatedRequest,
     res: Response,

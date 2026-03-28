@@ -25,6 +25,20 @@ export const getAllServices = async (
   }
 }
 
+export const getAdminServices = async (): Promise<ServicesResponse> => {
+  try {
+    const response = await apiClient.get<ServicesResponse>('/services/admin/my-services')
+
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError<{ message?: string }>(error)) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch your services.')
+    }
+
+    throw error
+  }
+}
+
 export const getServiceById = async (id: string): Promise<ServiceResponse> => {
   try {
     const response = await apiClient.get<ServiceResponse>(`/services/${id}`)

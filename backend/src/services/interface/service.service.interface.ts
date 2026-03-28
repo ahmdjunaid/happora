@@ -12,6 +12,7 @@ export interface IServiceService {
     payload: IServicePayload,
   ): Promise<IServiceResponse>;
   getAllServices(filters: IServiceFilters): Promise<IServiceListResponse>;
+  getAdminServices(provider: DecodedUser): Promise<IServiceListResponse>;
   getServiceById(id: string): Promise<IServiceResponse>;
   updateService(
     serviceId: string,

@@ -95,6 +95,18 @@ export class ServiceService implements IServiceService {
     };
   }
 
+  async getAdminServices(provider: DecodedUser): Promise<IServiceListResponse> {
+    const currentProvider = this.ensureAdminAccess(provider);
+    const services = await this._serviceRepository.findServicesByProvider(
+      currentProvider.sub,
+    );
+
+    return {
+      message: MESSAGES.SERVICE.FETCHED_SUCCESS,
+      services: services.map((service) => this.sanitizeService(service)),
+    };
+  }
+
   async getServiceById(id: string): Promise<IServiceResponse> {
     const service = await this._serviceRepository.findServiceById(id);
 
