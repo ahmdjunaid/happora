@@ -1,4 +1,3 @@
-import type { FormEvent } from 'react'
 import { useEffect, useState } from 'react'
 import { AppShell } from '../components/AppShell'
 import { ServiceCard } from '../components/ServiceCard'
@@ -19,15 +18,29 @@ export const HomePage = () => {
   const { user, logout } = useAuth()
   const [services, setServices] = useState<Service[]>([])
   const [filters, setFilters] = useState<ServiceFilters>(initialFilters)
+  const [debouncedFilters, setDebouncedFilters] =
+    useState<ServiceFilters>(initialFilters)
+  const [page, setPage] = useState(1)
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 9,
+    total: 0,
+    totalPages: 1,
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const loadServices = async (activeFilters: ServiceFilters) => {
+  const loadServices = async (activeFilters: ServiceFilters, activePage: number) => {
     try {
       setLoading(true)
       setError('')
-      const response = await getAllServices(getActiveServiceFilters(activeFilters))
+      const response = await getAllServices({
+        ...getActiveServiceFilters(activeFilters),
+        page: activePage,
+        limit: pagination.limit,
+      })
       setServices(response.services)
+      setPagination(response.pagination)
     } catch (requestError) {
       setError(
         requestError instanceof Error ? requestError.message : 'Failed to load services.',
@@ -38,88 +51,123 @@ export const HomePage = () => {
   }
 
   useEffect(() => {
-    void loadServices(initialFilters)
-  }, [])
+    const timer = window.setTimeout(() => {
+      setDebouncedFilters(filters)
+    }, 400)
+
+    return () => window.clearTimeout(timer)
+  }, [filters])
+
+  useEffect(() => {
+    void loadServices(debouncedFilters, page)
+  }, [debouncedFilters, page])
 
   const handleChange = (name: keyof ServiceFilters, value: string) => {
+    setPage(1)
     setFilters((current) => ({ ...current, [name]: value }))
   }
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    await loadServices(filters)
-  }
-
-  const categories = [...new Set([...hardcodedCategories, ...services.map((service) => service.category)])].sort()
+  const categories = [
+    ...new Set([...hardcodedCategories, ...services.map((service) => service.category)]),
+  ].sort()
 
   return (
     <AppShell userName={user?.name} onLogout={logout}>
-        <header className="mb-8 rounded-[2rem] border border-slate-200/80 bg-white/90 px-6 py-6 shadow-sm backdrop-blur md:px-8">
-          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-brand">
-                Curated event services
-              </p>
-              <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-900 md:text-6xl">
-                Unforgettable event experiences await.
-              </h1>
-              <p className="mt-4 text-base leading-7 text-slate-500">
-                Discover trusted vendors and creative professionals for concerts,
-                weddings, private dinners, and standout gatherings.
-              </p>
-            </div>
+      <header className="mb-8 rounded-[2rem] border border-slate-200/80 bg-white/90 px-6 py-6 shadow-sm backdrop-blur md:px-8">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-brand">
+              Curated event services
+            </p>
+            <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-900 md:text-6xl">
+              Unforgettable event experiences await.
+            </h1>
+            <p className="mt-4 text-base leading-7 text-slate-500">
+              Discover trusted vendors and creative professionals for concerts,
+              weddings, private dinners, and standout gatherings.
+            </p>
+          </div>
 
-            <div className="grid grid-cols-2 gap-4 text-right">
-              <div className="rounded-2xl bg-brand-soft px-5 py-4">
-                <p className="text-3xl font-semibold text-brand">{services.length}+</p>
-                <p className="text-xs uppercase tracking-[0.16em] text-slate-500">Services</p>
-              </div>
-              <div className="rounded-2xl bg-slate-50 px-5 py-4">
-                <p className="text-3xl font-semibold text-slate-900">{categories.length}+</p>
-                <p className="text-xs uppercase tracking-[0.16em] text-slate-500">Categories</p>
-              </div>
+          <div className="grid grid-cols-2 gap-4 text-right">
+            <div className="rounded-2xl bg-brand-soft px-5 py-4">
+              <p className="text-3xl font-semibold text-brand">{pagination.total}+</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-slate-500">Services</p>
+            </div>
+            <div className="rounded-2xl bg-slate-50 px-5 py-4">
+              <p className="text-3xl font-semibold text-slate-900">{categories.length}+</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-slate-500">Categories</p>
             </div>
           </div>
-        </header>
+        </div>
+      </header>
 
-        <div className="grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
-          <aside className="lg:sticky lg:top-6 lg:self-start">
-            <FiltersPanel
-              filters={filters}
-              categories={categories}
-              onChange={handleChange}
-              onSubmit={handleSubmit}
-            />
-          </aside>
+      <div className="grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
+        <aside className="lg:sticky lg:top-6 lg:self-start">
+          <FiltersPanel
+            filters={filters}
+            categories={categories}
+            onChange={handleChange}
+          />
+        </aside>
 
-          <section>
-            {loading && (
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
-                Loading services...
-              </div>
-            )}
+        <section>
+          {loading && (
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+              Loading services...
+            </div>
+          )}
 
-            {error && !loading && (
-              <div className="rounded-3xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-600 shadow-sm">
-                {error}
-              </div>
-            )}
+          {error && !loading && (
+            <div className="rounded-3xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-600 shadow-sm">
+              {error}
+            </div>
+          )}
 
-            {!loading && !error && (
+          {!loading && !error && (
+            <>
               <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {services.map((service) => (
                   <ServiceCard key={service.id} service={service} />
                 ))}
               </div>
-            )}
 
-            {!loading && !error && services.length === 0 && (
-              <div className="rounded-3xl border border-dashed border-slate-300 bg-white/80 p-10 text-center text-slate-500 shadow-sm">
-                No services found. Try changing your filters.
-              </div>
-            )}
-          </section>
-        </div>
+              {pagination.totalPages > 1 && (
+                <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
+                  <p className="text-sm text-slate-500">
+                    Page {pagination.page} of {pagination.totalPages} · {pagination.total}{' '}
+                    services
+                  </p>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      disabled={pagination.page <= 1}
+                      onClick={() => setPage((current) => current - 1)}
+                      className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      type="button"
+                      disabled={pagination.page >= pagination.totalPages}
+                      onClick={() => setPage((current) => current + 1)}
+                      className="rounded-xl bg-brand px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {!loading && !error && services.length === 0 && (
+            <div className="rounded-3xl border border-dashed border-slate-300 bg-white/80 p-10 text-center text-slate-500 shadow-sm">
+              No services found. Try changing your filters.
+            </div>
+          )}
+        </section>
+      </div>
     </AppShell>
   )
 }

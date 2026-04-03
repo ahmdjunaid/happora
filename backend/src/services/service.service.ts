@@ -87,11 +87,12 @@ export class ServiceService implements IServiceService {
   }
 
   async getAllServices(filters: IServiceFilters): Promise<IServiceListResponse> {
-    const services = await this._serviceRepository.findServices(filters);
+    const { services, pagination } = await this._serviceRepository.findServices(filters);
 
     return {
       message: MESSAGES.SERVICE.FETCHED_SUCCESS,
       services: services.map((service) => this.sanitizeService(service)),
+      pagination,
     };
   }
 
@@ -104,6 +105,12 @@ export class ServiceService implements IServiceService {
     return {
       message: MESSAGES.SERVICE.FETCHED_SUCCESS,
       services: services.map((service) => this.sanitizeService(service)),
+      pagination: {
+        page: 1,
+        limit: services.length || 1,
+        total: services.length,
+        totalPages: 1,
+      },
     };
   }
 

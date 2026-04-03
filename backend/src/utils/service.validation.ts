@@ -16,6 +16,24 @@ const parsePriceValue = (value: unknown): number => {
   return parsedValue;
 };
 
+const parsePaginationValue = (
+  value: unknown,
+  fallbackValue: number,
+  message: string,
+): number => {
+  if (value === undefined || value === null || value === "") {
+    return fallbackValue;
+  }
+
+  const parsedValue = Number(value);
+
+  if (!Number.isInteger(parsedValue) || parsedValue < 1) {
+    throw new AppError(HttpStatus.BAD_REQUEST, message);
+  }
+
+  return parsedValue;
+};
+
 const parseSlotsValue = (value: unknown): number => {
   const parsedValue = Number(value);
 
@@ -75,6 +93,8 @@ export const validateServiceFilters = (
     keyword: getTrimmedValue(query.keyword),
     category: getTrimmedValue(query.category),
     location: getTrimmedValue(query.location),
+    page: parsePaginationValue(query.page, 1, "Page must be a valid number greater than 0."),
+    limit: parsePaginationValue(query.limit, 9, "Limit must be a valid number greater than 0."),
   };
 
   if (query.minPrice !== undefined && query.minPrice !== "") {

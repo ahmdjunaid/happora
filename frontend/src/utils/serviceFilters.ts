@@ -4,6 +4,8 @@ export const getActiveServiceFilters = (
   filters: ServiceFilters,
 ): Partial<ServiceFilters> => {
   return Object.fromEntries(
-    Object.entries(filters).filter(([, value]) => value.trim() !== ''),
+    Object.entries(filters).filter(([, value]) =>
+      typeof value === 'string' ? value.trim() !== '' : value !== undefined,
+    ),
   ) as Partial<ServiceFilters>
 }

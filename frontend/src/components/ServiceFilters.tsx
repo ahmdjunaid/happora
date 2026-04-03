@@ -1,4 +1,3 @@
-import type { FormEvent } from 'react'
 import type { ServiceFilters as ServiceFiltersType } from '../types/service'
 import { categories as hardcodedCategories } from '../utils/categories'
 
@@ -6,20 +5,15 @@ interface ServiceFiltersProps {
   filters: ServiceFiltersType
   categories: string[]
   onChange: (name: keyof ServiceFiltersType, value: string) => void
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void
 }
 
 export const ServiceFilters = ({
   filters,
   categories,
   onChange,
-  onSubmit,
 }: ServiceFiltersProps) => {
   return (
-    <form
-      onSubmit={onSubmit}
-      className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
-    >
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-5">
         <h2 className="text-lg font-semibold text-slate-900">Refine Search</h2>
         <p className="mt-1 text-sm text-slate-500">Find the right service for your event.</p>
@@ -62,13 +56,6 @@ export const ServiceFilters = ({
           />
         </label>
       </div>
-
-      <button
-        type="submit"
-        className="mt-5 w-full rounded-xl bg-brand px-4 py-3 text-sm font-medium text-white"
-      >
-        Apply Filters
-      </button>
-    </form>
+    </div>
   )
 }

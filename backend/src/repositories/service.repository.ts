@@ -2,7 +2,10 @@ import { injectable } from "inversify";
 import { BaseRepository } from "./base.repository";
 import { ServiceDocument, ServiceModel } from "../model/service.model";
 import { IService, IServiceFilters } from "../types/service.types";
-import { IServiceRepository } from "./interface/service.repository.interface";
+import {
+  IServiceRepository,
+  IServiceSearchResult,
+} from "./interface/service.repository.interface";
 
 @injectable()
 export class ServiceRepository
@@ -17,7 +20,7 @@ export class ServiceRepository
     return this.create(data);
   }
 
-  findServices(filters: IServiceFilters): Promise<ServiceDocument[]> {
+  async findServices(filters: IServiceFilters): Promise<IServiceSearchResult> {
     const query: Record<string, unknown> = {
       isDeleted: false,
     };
@@ -46,7 +49,24 @@ export class ServiceRepository
       }
     }
 
-    return ServiceModel.find(query).sort({ createdAt: -1 });
+    const page = filters.page;
+    const limit = filters.limit;
+    const skip = (page - 1) * limit;
+
+    const [services, total] = await Promise.all([
+      ServiceModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      ServiceModel.countDocuments(query),
+    ]);
+
+    return {
+      services,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.max(Math.ceil(total / limit), 1),
+      },
+    };
   }
 
   findServicesByProvider(providerId: string): Promise<ServiceDocument[]> {

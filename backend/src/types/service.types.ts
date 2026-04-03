@@ -26,6 +26,8 @@ export interface IServiceFilters {
   location?: string;
   minPrice?: number;
   maxPrice?: number;
+  page: number;
+  limit: number;
 }
 
 export interface IServiceResponse {
@@ -36,6 +38,19 @@ export interface IServiceResponse {
 export interface IServiceListResponse {
   message: string;
   services: IServiceDto[];
+  pagination: IServicePagination;
+}
+
+export interface IServicePagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface IServiceListResult {
+  services: IServiceDto[];
+  pagination: IServicePagination;
 }
 
 export interface IServiceDto {

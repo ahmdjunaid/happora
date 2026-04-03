@@ -23,11 +23,19 @@ export interface ServiceFilters {
   keyword: string
   category: string
   location: string
+  page?: number
+  limit?: number
 }
 
 export interface ServicesResponse {
   message: string
   services: Service[]
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    totalPages: number
+  }
 }
 
 export interface ServiceResponse {
